@@ -1,15 +1,15 @@
 ---
-title: "Deployment"
-description: "Deploy the API and ZueDocs site with Vercel and Upstash."
+title: "Self-hosting"
+description: "Deploy your own authenticated MCP and REST API with Vercel and Upstash Redis."
 order: 2
 category: Start
 ---
 
-`dm-dot` uses **two independent Vercel projects** from one private repository. The repository-root API project, `dm-dot`, serves Go MCP/REST endpoints at `https://dm-dot.vercel.app`. The `docs/` project, `dm-dot-docs`, hosts the landing page and ZueDocs at `https://dm-dot.ashray.xyz`. Only the API uses Upstash Redis to retain the one webhook subscription.
+This guide covers running **your own dm-dot API**. Deploy the Go MCP and REST endpoints as Vercel Functions, backed by Upstash Redis to persist your dot's webhook subscription. You'll get two authenticated routes, `/mcp` and `/v1/messages`, on **your own Vercel hostname or custom domain**.
 
 ## Prerequisites
 
-- A Vercel account/project with access to the repository (including private-repository permissions, when applicable).
+- A Vercel account with access to the source repository.
 - An Upstash Redis database with its HTTPS REST endpoint and REST token. Prefer a **dedicated** database because it stores a webhook signing secret.
 - A long, random API key stored in your password manager or secret store.
 - Go 1.26+ for local development and testing; the Vercel Go builder installs its own toolchain.
@@ -30,13 +30,13 @@ dm-dot:subscription:v1
 
 This key holds the subscription callback URL, HMAC signing secret, ID, and expiration. Its Redis TTL follows the granted subscription duration. **It does not store message bodies.**
 
-## 2. Create the Vercel API project
+## 2. Create your Vercel project
 
 Import the GitHub repository in Vercel, or use the CLI from the repository root:
 
 ```bash
-vercel project create dm-dot
-vercel link --yes --project dm-dot
+vercel project create my-dm-dot-api
+vercel link --yes --project my-dm-dot-api
 ```
 
 Configure:
@@ -52,7 +52,7 @@ Configure:
 
 When linking a private repository, grant the Vercel GitHub integration access to **this repository**, not unnecessarily to every private repository.
 
-The repository-root `vercel.json` disables automatic Git deployments. A separate API GitHub Actions workflow deploys only changes to Go sources and API configuration, so changes to the docs do not consume API deployment quota. Manual production deployments are also supported. The API project does not build a static website.
+The repository-root `vercel.json` disables automatic Git deployments, so deploy manually with the Vercel CLI or configure your own CI. If you want automated deployments, the example [API GitHub Actions workflow](https://github.com/amxv/dm-dot/blob/main/.github/workflows/api-deploy.yml) requires **your own** Vercel project ID, organization ID, and project-scoped token. None of the maintainer's credentials or deployment settings are needed to self-host the API.
 
 ## 3. Set Production secrets
 
@@ -76,17 +76,18 @@ The CLI also supports piping values through standard input for automation. Avoid
 
 **Important:** The API key is needed again to connect an MCP client. Keep a recoverable copy in your password manager or OS keychain. Do not rely on retrieving a sensitive Vercel environment variable later.
 
-## 4. Deploy and verify the API
+## 4. Deploy and verify
 
 ```bash
-make check
+go test ./...
+go vet ./...
 vercel deploy --prod --yes
 ```
 
 The public route follows this pattern:
 
 ```text
-https://YOUR-VERCEL-HOST/mcp?key=YOUR-MCP-API-KEY
+https://YOUR-API-HOST/mcp?key=YOUR-MCP-API-KEY
 ```
 
 Expected outcomes:
@@ -98,23 +99,6 @@ Expected outcomes:
 5. `POST /v1/messages` requires `Authorization: Bearer <DM_DOT_REST_API_KEY>`; with no subscription it returns `409`, and after delivery succeeds it returns `202`.
 
 Use [Getting started](/docs/getting-started) to connect ChatGPT and subscribe the dot. Follow [Troubleshooting](/docs/troubleshooting) if the platform's event source list lags behind the plugin UI.
-
-## 5. Deploy the independent ZueDocs site
-
-The `docs/` directory contains a standalone Astro + ZueDocs application. Provision the **second Vercel project** with Root Directory `docs` and Framework Preset **Astro**:
-
-```bash
-cd docs
-bun install --frozen-lockfile
-bun run check
-bun run build
-vercel link --yes --project dm-dot-docs
-vercel deploy --prod --yes
-```
-
-Attach `dm-dot.ashray.xyz` to the docs project and create the DNS record Vercel requests in Cloudflare. Keep DNS-only during Vercel domain verification. No API, Redis, or MCP secrets should be configured in the docs project; all authenticated message sending remains at `dm-dot.vercel.app`.
-
-The docs project also disables Vercel Git auto-deployments. A separate, path-filtered GitHub Actions workflow deploys documentation changes (`docs/**`) without redeploying the API. The old API-domain homepage and documentation URLs redirect to the docs hostname.
 
 ## Updating or recovering
 

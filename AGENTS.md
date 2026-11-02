@@ -10,4 +10,4 @@
 - Run `make check` after changes. Production branch is `main`; previews are disabled.
 - The website must use the original Astro + ZueDocs app under `docs/`, including native DocsPageLayout, syntax-highlighted code blocks, code copying, and Mermaid. Do not create or restore a custom Markdown documentation renderer.
 - The marketing landing design is `docs/src/pages/index.astro` with isolated assets in `docs/public/assets/`.
-- **Keep two independent Vercel projects.** API: `dm-dot` (repo root, `dm-dot.vercel.app`). Website and ZueDocs: `dm-dot-docs` (root `docs/`, `dm-dot.ashray.xyz`). Neither project builds the other's output. Deployment workflows use path filters and Vercel Git auto-deployments are disabled to avoid duplicate quota usage.
+- **Keep two independent maintainer Vercel projects.** API: `dm-dot` (repo root). Website and ZueDocs: `dm-dot-docs` (root `docs/`). Neither builds the other's output. Deployment workflows use path filters and Vercel Git auto-deployments are disabled to avoid duplicate quota usage. Never present the maintainer's API hostname as a self-hosting endpoint.
