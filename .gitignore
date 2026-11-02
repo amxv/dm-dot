@@ -1,0 +1,12 @@
+# Go output
+/dist/
+/bin/
+
+# Local Vercel config and secrets
+/.vercel/
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
