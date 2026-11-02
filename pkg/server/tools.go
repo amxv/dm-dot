@@ -27,9 +27,11 @@ func makeServer() *mcp.Server {
 			case errors.Is(err, ErrNoActiveSubscription):
 				return toolError("No active dot subscription. Have the dot subscribe to message.created first."), nil, nil
 			case errors.Is(err, ErrSubscriptionStorage):
-				return toolError("Cannot load the dot subscription: " + err.Error()), nil, nil
+				// Underlying Redis errors can include endpoint URLs or other private details.
+				return toolError("Cannot load the dot subscription. Check the server configuration and try again."), nil, nil
 			default:
-				return toolError("ChatGPT did not acknowledge delivery: " + err.Error()), nil, nil
+				// HTTP client errors can contain the full webhook URL (including query secrets).
+				return toolError("ChatGPT did not acknowledge delivery. Try again later."), nil, nil
 			}
 		}
 		return &mcp.CallToolResult{Content: []mcp.Content{&mcp.TextContent{Text: fmt.Sprintf("ChatGPT accepted event %s for asynchronous processing by your dot.", eventID)}}}, nil, nil

@@ -1,0 +1,3 @@
+# The historical test fixture uses a deterministic, synthetic webhook signing key.
+# Ignore only this exact historical finding, not the whole rule or file.
+264b40cd03bab3bdcf647b3b1bf6aca3404730d1:pkg/server/rest_test.go:generic-api-key:92

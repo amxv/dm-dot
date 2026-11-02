@@ -1,71 +1,63 @@
 # dm-dot
 
-**A direct line to your ChatGPT dot.**
+**Send a message to your ChatGPT dot from anywhere.**
 
-Send messages from another ChatGPT conversation, any MCP-capable agent, or an application using an authenticated REST API. One small bridge, one subscribed dot, no extra model runtime.
+Your work happens across ChatGPT conversations, coding agents, and automation scripts. Your dot lives in ChatGPT. **dm-dot connects them**, so another assistant or app can pass your dot a note or delegate a task without running a second AI agent.
 
-**Website & ZueDocs:** [dm-dot.ashray.xyz](https://dm-dot.ashray.xyz) · **Self-hosting:** [Deploy your own API](docs/src/content/docs/deployment.md) · **License:** [Apache-2.0](LICENSE)
+For example, a coding agent finishes a deployment and sends: *"The new version is live. Check for errors and tell me if anything needs attention."* Your subscribed dot can pick up that message and act using its existing tools and permissions.
 
-> **Source-release note:** The GitHub repository is intentionally **private for now**. The code and documentation are being prepared for a future open-source release. No public repository access or unauthenticated message sending is implied.
+[Website](https://dm-dot.ashray.xyz) · [Documentation](https://dm-dot.ashray.xyz/docs) · [Self-hosting guide](https://dm-dot.ashray.xyz/docs/deployment)
 
-## What it does
+## How it works
 
 ```text
- ChatGPT chat ──┐
- External agent ├──→ dm-dot ── signed MCP event ──→ your dot
- Your backend ──┘         ↳ one active subscription
+Another ChatGPT chat ──┐
+Coding agent (MCP) ────┼──→ dm-dot ── signed event ──→ Your ChatGPT dot
+Script or app (REST) ──┘
 ```
 
-- `send_to_dot(message)`: the only exposed **MCP tool**.
-- `POST /v1/messages`: authenticated **REST API** for any backend or script.
-- `message.created`: webhook event that the dot explicitly subscribes to.
-- Go, official MCP SDK, stateless Vercel functions, and Upstash Redis for subscription persistence.
+- **From an AI assistant:** Call the `send_to_dot` MCP tool with a message.
+- **From an app or script:** Call the authenticated `POST /v1/messages` REST endpoint.
+- **In ChatGPT:** Your dot subscribes to the `message.created` event and handles incoming messages through its normal workflow.
 
-A successful send confirms ChatGPT **accepted the webhook**, not that the dot has completed processing. This version has no reply channel, durable queue, or message history.
+It's a small, self-hosted bridge, not another model runtime. You don't need an OpenAI API key. Each deployment supports **one subscribed dot**, and messages are delivered through signed webhooks.
 
-## Quick start
+## Get started
 
-1. Deploy your own `dm-dot` API to Vercel with Upstash Redis and secret environment variables. [Self-hosting guide](docs/src/content/docs/deployment.md)
-2. Connect the authenticated MCP endpoint to ChatGPT and rescan for `send_to_dot` and `message.created`.
-3. Ask your dot to subscribe to `message.created`.
-4. Send a message through the MCP tool or REST API.
+1. [Deploy your own API](https://dm-dot.ashray.xyz/docs/deployment) with Vercel, Upstash Redis, and private credentials.
+2. [Connect the MCP endpoint to ChatGPT](https://dm-dot.ashray.xyz/docs/getting-started), then ask your dot to subscribe to `message.created`.
+3. Send a message from another ChatGPT conversation, an MCP agent, or a backend script.
 
-**REST example** (run from a trusted server; keep your bearer key out of client-side code):
+For a script or backend, send a message like this:
 
 ```bash
-curl -X POST 'https://YOUR-VERCEL-HOST/v1/messages' \
+curl -X POST 'https://YOUR-API-HOST/v1/messages' \
   -H "Authorization: Bearer ${DM_DOT_REST_API_KEY}" \
   -H 'Content-Type: application/json' \
-  -d '{"message":"Keep me posted when the deployment finishes."}'
+  -d '{"message":"The deployment is complete. Please review the results."}'
 ```
 
-The REST API returns HTTP `202` with a generated `event_id` when the webhook is acknowledged.
+Keep your API key on the server, never in browser code. See the [REST API reference](https://dm-dot.ashray.xyz/docs/rest-api) for authentication and responses.
 
-## Reference
+## What to expect
 
-The technical details live in [ZueDocs](https://dm-dot.ashray.xyz/docs), restored from the original [`go-mcp-template`](https://github.com/amxv/go-mcp-template). The canonical Markdown is in [`docs/src/content/docs/`](docs/src/content/docs/), rendered by Astro + ZueDocs with its built-in syntax highlighting, code-copy buttons, Mermaid diagrams, search, and navigation.
+**This is one-way messaging.** dm-dot does not provide a reply channel, message history, or a durable queue. A successful send means ChatGPT accepted the webhook, **not** that your dot has finished (or even started) processing it. Your dot must explicitly subscribe, and your ChatGPT account must support MCP Events subscriptions.
 
-| Guide | What you'll find |
-| --- | --- |
-| [Getting started](docs/src/content/docs/getting-started.md) | First connection and subscription |
-| [Self-hosting](docs/src/content/docs/deployment.md) | Your own API, Vercel, Redis, secrets, and configuration |
-| [REST API](docs/src/content/docs/rest-api.md) | Auth, request schema, examples, errors |
-| [MCP & Events](docs/src/content/docs/protocol.md) | RPC methods, discovery, webhook payloads |
-| [Architecture](docs/src/content/docs/architecture.md) | Message flow, storage, and trade-offs |
-| [Security](docs/src/content/docs/security.md) | Trust boundaries and credential handling |
-| [Troubleshooting](docs/src/content/docs/troubleshooting.md) | Event-source discovery and delivery failures |
-| [Latency](docs/src/content/docs/latency.md) | Measuring sender-to-dot execution |
-| [Development](docs/src/content/docs/development.md) | Tests and project structure |
+For more detail, see:
+
+- [Getting started](https://dm-dot.ashray.xyz/docs/getting-started) and [self-hosting](https://dm-dot.ashray.xyz/docs/deployment)
+- [MCP tools & Events](https://dm-dot.ashray.xyz/docs/protocol) and [REST API](https://dm-dot.ashray.xyz/docs/rest-api)
+- [Architecture](https://dm-dot.ashray.xyz/docs/architecture), [security](https://dm-dot.ashray.xyz/docs/security), and [troubleshooting](https://dm-dot.ashray.xyz/docs/troubleshooting)
 
 ## Development
 
-Requires **Go 1.26+**, **Node.js 22+**, and **Bun 1.4+** for the ZueDocs app.
+Requires Go 1.26+, Node.js 22+, and Bun 1.4+ to run the Go checks and build the documentation site:
 
 ```bash
 make docs-install
 make check
 ```
 
-The landing page is [`docs/src/pages/index.astro`](docs/src/pages/index.astro); all reference pages use ZueDocs layouts and enhancements. **Self-hosting only requires deploying the Go API and configuring Redis.** The project website is maintained separately. See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
+See the [development guide](https://dm-dot.ashray.xyz/docs/development), [contribution guidelines](CONTRIBUTING.md), and [security policy](SECURITY.md).
 
-Built from [amxv/go-mcp-template](https://github.com/amxv/go-mcp-template). Independent project, not affiliated with OpenAI.
+Licensed under [Apache-2.0](LICENSE). Based on [amxv/go-mcp-template](https://github.com/amxv/go-mcp-template). Independent project, not affiliated with OpenAI.

@@ -58,9 +58,9 @@ The common `SendMessage` function is used by both the MCP tool and REST ingress.
 ## Testing and security
 
 - Go tests use local mock REST and webhook servers. They do not contact the live dot or real Upstash database.
-- Never expose keys or webhook callback signing secrets in tests, docs, commits or screenshots.
-- Keep the GitHub repository private until its owner explicitly changes visibility.
-- The live API must remain authenticated even if source code becomes public later.
+- Never commit real API keys or webhook signing secrets. Use synthetic fixtures in tests and examples.
+- Keep production subscriptions and deployment-specific secrets out of the repository.
+- The deployed API must always require authentication, regardless of repository visibility.
 - Verify `make check`, `git diff --check`, and hosted HTTP responses before shipping changes.
 
-For future contributions, see [CONTRIBUTING.md](https://github.com/amxv/dm-dot/blob/main/CONTRIBUTING.md) in the repository. Security considerations are detailed in [Security](/docs/security).
+For contributions, see [CONTRIBUTING.md](https://github.com/amxv/dm-dot/blob/main/CONTRIBUTING.md) in the repository. Security considerations are detailed in [Security](/docs/security).

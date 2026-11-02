@@ -2,8 +2,6 @@
 
 Thanks for your interest in improving this project.
 
-The repository is currently private. This document prepares for a future source release; it is **not** an invitation to make the repository public or change access settings.
-
 ## Project principles
 
 - Keep the core small and auditable.
@@ -29,4 +27,4 @@ Before submitting a change, run `make check`, ensure the diff is focused, and up
 
 ## Issues and security
 
-Use issues or pull requests for ordinary bugs and improvements once the repository is available. For sensitive vulnerabilities, **do not** post a public issue; see [SECURITY.md](SECURITY.md).
+Use issues or pull requests for ordinary bugs and improvements. For sensitive vulnerabilities, **do not** post a public issue; see [SECURITY.md](SECURITY.md).
