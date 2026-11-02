@@ -79,6 +79,89 @@ func TestInitializationAdvertisesEventsAndOnlyOneTool(t *testing.T) {
 	}
 }
 
+func TestMCP2DiscoverAdvertisesEvents(t *testing.T) {
+	t.Setenv("MCP_API_KEY", "test-key")
+	// MCP 2.0 requires the method header as well as per-request metadata.
+	// ChatGPT can discover the server through this path instead of initialize.
+	req := httptest.NewRequest(http.MethodPost, "/mcp?key=test-key", strings.NewReader(`{
+		"jsonrpc":"2.0", "id":27, "method":"server/discover",
+		"params":{"_meta":{
+			"io.modelcontextprotocol/protocolVersion":"2026-07-28",
+			"io.modelcontextprotocol/clientInfo":{"name":"dm-dot-event-discovery-test","version":"1.0.0"},
+			"io.modelcontextprotocol/clientCapabilities":{}
+		}}
+	}`))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json, text/event-stream")
+	req.Header.Set("Mcp-Protocol-Version", "2026-07-28")
+	req.Header.Set("Mcp-Method", "server/discover")
+	recorder := httptest.NewRecorder()
+	Handler().ServeHTTP(recorder, req)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("MCP 2.0 discovery HTTP %d: %s", recorder.Code, recorder.Body.String())
+	}
+	var response struct {
+		Result struct {
+			ResultType        string                     `json:"resultType"`
+			SupportedVersions []string                   `json:"supportedVersions"`
+			Capabilities      map[string]json.RawMessage `json:"capabilities"`
+		} `json:"result"`
+	}
+	if err := json.Unmarshal(recorder.Body.Bytes(), &response); err != nil {
+		t.Fatalf("unmarshal MCP 2.0 discovery: %v", err)
+	}
+	if response.Result.ResultType != "complete" {
+		t.Errorf("discovery resultType = %q", response.Result.ResultType)
+	}
+	if string(response.Result.Capabilities["events"]) != "{}" {
+		t.Fatalf("MCP 2.0 events capability missing: %s", recorder.Body.String())
+	}
+	if _, ok := response.Result.Capabilities["tools"]; !ok {
+		t.Fatalf("lost SDK tools capability: %s", recorder.Body.String())
+	}
+	var hasMCP2 bool
+	for _, version := range response.Result.SupportedVersions {
+		if version == "2026-07-28" {
+			hasMCP2 = true
+		}
+	}
+	if !hasMCP2 {
+		t.Fatalf("lost MCP 2.0 supportedVersions: %v", response.Result.SupportedVersions)
+	}
+
+	// Verify the event catalog is retrievable with MCP 2.0 metadata.
+	eventReq := httptest.NewRequest(http.MethodPost, "/mcp?key=test-key", strings.NewReader(`{
+		"jsonrpc":"2.0", "id":28, "method":"events/list",
+		"params":{"_meta":{
+			"io.modelcontextprotocol/protocolVersion":"2026-07-28",
+			"io.modelcontextprotocol/clientCapabilities":{}
+		}}
+	}`))
+	eventReq.Header.Set("Content-Type", "application/json")
+	eventReq.Header.Set("Accept", "application/json, text/event-stream")
+	eventReq.Header.Set("Mcp-Protocol-Version", "2026-07-28")
+	eventReq.Header.Set("Mcp-Method", "events/list")
+	eventRecorder := httptest.NewRecorder()
+	Handler().ServeHTTP(eventRecorder, eventReq)
+	if eventRecorder.Code != http.StatusOK {
+		t.Fatalf("MCP 2.0 events/list HTTP %d: %s", eventRecorder.Code, eventRecorder.Body.String())
+	}
+	var eventResponse struct {
+		Result struct {
+			Events []struct {
+				Name     string   `json:"name"`
+				Delivery []string `json:"delivery"`
+			} `json:"events"`
+		} `json:"result"`
+	}
+	if err := json.Unmarshal(eventRecorder.Body.Bytes(), &eventResponse); err != nil {
+		t.Fatalf("unmarshal events/list: %v", err)
+	}
+	if len(eventResponse.Result.Events) != 1 || eventResponse.Result.Events[0].Name != eventName || len(eventResponse.Result.Events[0].Delivery) != 1 || eventResponse.Result.Events[0].Delivery[0] != "webhook" {
+		t.Fatalf("unexpected MCP 2.0 events/list: %s", eventRecorder.Body.String())
+	}
+}
+
 func TestSendRequiresSubscriptionAndValidMessage(t *testing.T) {
 	t.Setenv("MCP_API_KEY", "test-key")
 	t.Setenv("UPSTASH_REDIS_REST_URL", "")

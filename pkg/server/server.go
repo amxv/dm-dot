@@ -63,10 +63,12 @@ func Handler() http.Handler {
 			handleEventRPC(w, r, request.Method, request.ID, request.Params)
 			return
 		}
-		if request.Method == "initialize" {
-			// JSONResponse ensures the initialization reply is a JSON object.
-			// Inject only the standards-draft event capability; leave the rest to
-			// the SDK so normal MCP tools and protocol negotiation still work.
+		if request.Method == "initialize" || request.Method == "server/discover" {
+			// ChatGPT discovers events from initialize on legacy MCP and from
+			// server/discover on MCP 2.0 (2026-07-28). The upstream Go SDK does
+			// not expose the draft events capability in its typed schema, so
+			// advertise it in both handshake responses. Keep all other fields
+			// and version negotiation owned by the SDK.
 			recorder := httptest.NewRecorder()
 			transport.ServeHTTP(recorder, r)
 			result := recorder.Result()
