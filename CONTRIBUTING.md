@@ -14,16 +14,16 @@ The repository is currently private. This document prepares for a future source 
 
 ## Work locally
 
-Install Go 1.26+, Node.js 22+ and npm, then run:
+Install Go 1.26+, Node.js 22+, and Bun 1.4+, then run:
 
 ```bash
 go test ./...
 go vet ./...
-npm ci
-npm run check
+make docs-install
+make check
 ```
 
-The website is generated from `web/` and `docs/` into ignored `public/` files. Modify the source and rebuild rather than editing the generated output.
+The landing page is `docs/src/pages/index.astro` and the docs are in `docs/src/content/docs/`. The original Astro + ZueDocs app builds the website into `docs/dist/` for a **separate** Vercel project. The repository-root project deploys only the Go API functions. Modify ZueDocs source, not generated output.
 
 Before submitting a change, run `make check`, ensure the diff is focused, and update the relevant reference docs. Do not include API tokens, private URLs, personal data or production subscriptions.
 

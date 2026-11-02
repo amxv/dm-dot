@@ -1,4 +1,9 @@
-# Troubleshooting
+---
+title: "Troubleshooting"
+description: "Resolve discovery, indexing, subscription, and delivery issues."
+order: 8
+category: Guides
+---
 
 Identify which step failed: **plugin discovery**, **event-source indexing**, **subscription registration**, **Redis**, **webhook acknowledgment**, or **the dot's later execution**. These are separate systems.
 
@@ -6,7 +11,7 @@ Identify which step failed: **plugin discovery**, **event-source indexing**, **s
 
 `send_to_dot` is registered through the official MCP Go SDK. The event catalog is implemented separately. Make sure the deployed server advertises `events: {}` in **both** legacy `initialize` and MCP 2.0 `server/discover`, and that `events/list` returns `message.created` with webhook delivery.
 
-MCP 2.0 (`2026-07-28`) requires its own method header and protocol metadata. A handcrafted probe missing `Mcp-Method: server/discover` will return HTTP `400` even on a correct server. Follow the [MCP reference](protocol.md#event-discovery) instead of treating every failed manual probe as a server defect.
+MCP 2.0 (`2026-07-28`) requires its own method header and protocol metadata. A handcrafted probe missing `Mcp-Method: server/discover` will return HTTP `400` even on a correct server. Follow the [MCP reference](/docs/protocol#event-discovery) instead of treating every failed manual probe as a server defect.
 
 Rescan the MCP connection after a deployment that changes advertised capabilities.
 
@@ -40,13 +45,13 @@ The plugin may be connected without the dot having subscribed. Ask the dot to su
 | `503 storage_unavailable` | Incorrect Redis REST credentials or unreachable Upstash | Inspect Vercel env and Upstash health |
 | `502 delivery_failed` | Webhook failed or returned non-success | Check remote callback and transient errors |
 
-See [REST API](rest-api.md) for the complete status mapping.
+See [REST API](/docs/rest-api) for the complete status mapping.
 
 ## Webhook accepted, but the dot has not done anything
 
 An HTTP `202` from the REST API, or an event ID from the MCP tool, confirms **ChatGPT webhook acceptance**. The dot works asynchronously and may be subject to platform scheduling, permissions, and its own tool calls. There is no built-in completion receipt. Test with a unique message ID and ask the dot to acknowledge via an already-authorized channel.
 
-See [Measuring latency](latency.md) for an accurate timing method.
+See [Measuring latency](/docs/latency) for an accurate timing method.
 
 ## Deployment doesn't reflect source changes
 

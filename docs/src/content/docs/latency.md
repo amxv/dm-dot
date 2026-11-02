@@ -1,4 +1,9 @@
-# Measuring latency
+---
+title: "Measuring latency"
+description: "Measure submission, webhook acknowledgment, and dot execution."
+order: 7
+category: Guides
+---
 
 `dm-dot` is event-driven, but **webhook acceptance and dot execution are different milestones**. A single synchronous tool call cannot measure the entire path to the dot's first action.
 
@@ -40,4 +45,4 @@ This experiment does **not** add a reply channel to `dm-dot`. It relies on a sep
 - A callback HTTP `2xx` only proves event acceptance; it is not proof of execution or success.
 - Duplicated events can occur after retries, so correlate by test ID **and** webhook event ID where possible.
 
-Keep timestamps and results free of secrets. See [MCP & Events reference](protocol.md#webhook-payload) for event metadata and [Architecture](architecture.md) for the delivery sequence.
+Keep timestamps and results free of secrets. See [MCP & Events reference](/docs/protocol#webhook-payload) for event metadata and [Architecture](/docs/architecture) for the delivery sequence.

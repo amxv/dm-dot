@@ -1,4 +1,9 @@
-# MCP interface reference
+---
+title: "MCP & Events"
+description: "Tool and event methods, schemas, signed webhook delivery."
+order: 4
+category: Reference
+---
 
 All MCP JSON-RPC methods share one authenticated Streamable HTTP endpoint:
 
@@ -8,7 +13,7 @@ POST https://YOUR-VERCEL-HOST/mcp?key=YOUR-MCP-API-KEY
 
 `MCP_API_KEY` is a **shared connection credential**. Do not paste its actual value in examples, issue reports, terminal history, or logs. Without a valid key, requests are rejected before reaching the MCP server.
 
-This page covers MCP Events. Applications using normal HTTP can call the **separate authenticated** [REST API](rest-api.md) at `POST /v1/messages`.
+This page covers MCP Events. Applications using normal HTTP can call the **separate authenticated** [REST API](/docs/rest-api) at `POST /v1/messages`.
 
 ## Public MCP tool
 
@@ -124,7 +129,7 @@ The example expiration above is illustrative, not a live server value. The actua
 - **Single subscriber:** Another callback is rejected while an active different callback exists.
 - **Storage:** Redis key `dm-dot:subscription:v1`, with an expiry matching the subscription lifetime.
 
-An idempotent subscription ID is derived from the shared authenticated principal (`MCP_API_KEY`), callback URL, event name, and empty event arguments. As a result, changing the MCP API key affects subscription identity; see [Deployment](deployment.md#updating-or-recovering).
+An idempotent subscription ID is derived from the shared authenticated principal (`MCP_API_KEY`), callback URL, event name, and empty event arguments. As a result, changing the MCP API key affects subscription identity; see [Deployment](/docs/deployment#updating-or-recovering).
 
 ### `events/unsubscribe`
 
@@ -172,4 +177,4 @@ For transient failures, the server retries up to **three total attempts**, prese
 | Subscription storage unavailable | JSON-RPC `-32603` |
 | No subscription or failed message delivery | MCP tool result with `isError: true` |
 
-See [Security](security.md) for callback restrictions, [Architecture](architecture.md) for the life cycle, and the [OpenAI MCP Events documentation](https://developers.openai.com/plugins/build/mcp-events) for the broader event contract.
+See [Security](/docs/security) for callback restrictions, [Architecture](/docs/architecture) for the life cycle, and the [OpenAI MCP Events documentation](https://developers.openai.com/plugins/build/mcp-events) for the broader event contract.

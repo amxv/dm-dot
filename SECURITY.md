@@ -19,4 +19,4 @@ This project is pre-release. Fixes are applied to the `main` branch; there is no
 - Do not assume a successful webhook response means a dot has processed the event.
 - Do not expose this single-user bridge as a multi-tenant service without additional authentication, isolation, rate limits, and a security review.
 
-More detail: [docs/security.md](docs/security.md).
+More detail: [docs/src/content/docs/security.md](docs/src/content/docs/security.md).

@@ -1,4 +1,9 @@
-# Security model
+---
+title: "Security"
+description: "Credentials, callback verification, and trust boundaries."
+order: 6
+category: Reference
+---
 
 `dm-dot` is a **single-deployment, single-subscriber** integration. It is not designed as a public, anonymous endpoint or as a multi-tenant service. Anyone who holds the authenticated MCP URL can call the message tool **and** the subscription protocol methods.
 
@@ -27,7 +32,7 @@ Limitations:
 
 Recommended precautions: use a high-entropy key, store it in a secure credential manager, rotate it if exposed, keep client access limited, and enable reasonable platform monitoring and throttling around the endpoint. Do not post a real authenticated URL in GitHub issues, chat screenshots, or a public README.
 
-The REST API uses a **separate `DM_DOT_REST_API_KEY` bearer token**. It does not accept the MCP query parameter as authentication, and it does not advertise permissive browser CORS. Both token types can initiate dot work, so neither belongs in client-side JavaScript or public environment variables. See [REST API](rest-api.md).
+The REST API uses a **separate `DM_DOT_REST_API_KEY` bearer token**. It does not accept the MCP query parameter as authentication, and it does not advertise permissive browser CORS. Both token types can initiate dot work, so neither belongs in client-side JavaScript or public environment variables. See [REST API](/docs/rest-api).
 
 ## Callback security
 
@@ -67,4 +72,4 @@ Before advertising a hosted instance to other users or converting the system int
 
 Source code visibility does **not** require making the current hosted MCP endpoint public to unauthenticated callers. The deployment must continue enforcing its API key.
 
-For reporting vulnerabilities, see [SECURITY.md](../SECURITY.md).
+For reporting vulnerabilities, see [SECURITY.md](https://github.com/amxv/dm-dot/blob/main/SECURITY.md).

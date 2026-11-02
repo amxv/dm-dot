@@ -1,9 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "installCommand": "npm ci",
-  "buildCommand": "npm run build",
-  "outputDirectory": "public",
   "functions": {
     "api/mcp.go": {
       "maxDuration": 60
@@ -22,10 +18,14 @@
       "destination": "/api/messages"
     }
   ],
+  "redirects": [
+    { "source": "/", "destination": "https://dm-dot.ashray.xyz/", "permanent": false },
+    { "source": "/docs", "destination": "https://dm-dot.ashray.xyz/docs", "permanent": false },
+    { "source": "/docs/:path*", "destination": "https://dm-dot.ashray.xyz/docs/:path*", "permanent": false },
+    { "source": "/reference", "destination": "https://dm-dot.ashray.xyz/docs", "permanent": true },
+    { "source": "/reference/:path*", "destination": "https://dm-dot.ashray.xyz/docs/:path*", "permanent": true }
+  ],
   "git": {
-    "deploymentEnabled": {
-      "main": true,
-      "**": false
-    }
+    "deploymentEnabled": false
   }
 }

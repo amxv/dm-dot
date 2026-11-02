@@ -1,4 +1,9 @@
-# REST API
+---
+title: "REST API"
+description: "Authentication, request shapes, examples, and error responses."
+order: 3
+category: Reference
+---
 
 Send a message to the **same subscribed ChatGPT dot** using ordinary HTTPS. The REST endpoint is useful for other AI agents, backend services, scripts, CI workflows, or applications that cannot speak MCP.
 
@@ -126,4 +131,4 @@ Do not assume retries are exactly-once. For application-level deduplication, inc
 - Anyone with the REST key can wake the subscribed dot; share it only with trusted applications.
 - Messages should be treated as **untrusted inputs** by the dot. Sending a message does not authorize unrelated actions.
 
-See [Security](security.md) and [MCP & Events reference](protocol.md) for the underlying protocol.
+See [Security](/docs/security) and [MCP & Events reference](/docs/protocol) for the underlying protocol.

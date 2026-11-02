@@ -1,6 +1,11 @@
-# Getting started
+---
+title: "Getting started"
+description: "Connect your dot, subscribe, and send the first message."
+order: 1
+category: Start
+---
 
-This guide connects a deployed `dm-dot` server to a single ChatGPT dot and sends a first message. For a fresh deployment, complete [Deployment & configuration](deployment.md) first.
+This guide connects a deployed `dm-dot` server to a single ChatGPT dot and sends a first message. For a fresh deployment, complete [Deployment & configuration](/docs/deployment) first.
 
 ## 1. Check the prerequisites
 
@@ -27,7 +32,7 @@ After connecting, **rescan** the MCP server. Confirm its plugin details show:
 | Tool | `send_to_dot` |
 | Event | `message.created` (webhook) |
 
-If the tool is visible but the event is missing, see [Event discovery troubleshooting](troubleshooting.md#events-show-in-the-plugin-ui-but-the-dot-says-there-are-no-event-sources).
+If the tool is visible but the event is missing, see [Event discovery troubleshooting](/docs/troubleshooting#events-show-in-the-plugin-ui-but-the-dot-says-there-are-no-event-sources).
 
 ## 3. Subscribe the dot
 
@@ -68,4 +73,4 @@ This is **webhook acceptance, not dot completion**. Verify actual processing sep
 - If you intentionally switch to a different dot, unsubscribe the old callback first, or let it expire.
 - Changes to event descriptions or schema require rescan; ChatGPT's subscription-source indexing may take time to reflect them.
 
-Next: [Architecture](architecture.md) · [Measuring latency](latency.md) · [Troubleshooting](troubleshooting.md).
+Next: [Architecture](/docs/architecture) · [Measuring latency](/docs/latency) · [Troubleshooting](/docs/troubleshooting).

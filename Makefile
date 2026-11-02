@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: fmt test vet docs-check check
+.PHONY: fmt test vet docs-install docs-check docs-build check
 
 fmt:
 	gofmt -w $$(find api pkg -name '*.go')
@@ -11,7 +11,13 @@ test:
 vet:
 	go vet ./...
 
-docs-check:
-	npm run check
+docs-install:
+	cd docs && bun install --frozen-lockfile
 
-check: test vet docs-check
+docs-check:
+	cd docs && bun run check
+
+docs-build:
+	cd docs && bun run build
+
+check: test vet docs-check docs-build

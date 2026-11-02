@@ -12,3 +12,10 @@
 
 # macOS
 .DS_Store
+
+# ZueDocs build outputs and local secrets
+/docs/node_modules/
+/docs/dist/
+/docs/.astro/
+/docs/.vercel/
+/docs/.env*.local

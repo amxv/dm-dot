@@ -1,6 +1,11 @@
-# Deployment & configuration
+---
+title: "Deployment"
+description: "Deploy the API and ZueDocs site with Vercel and Upstash."
+order: 2
+category: Start
+---
 
-`dm-dot` is designed for **Vercel Go Functions** backed by **Upstash Redis**. It uses stateless Streamable HTTP; a Redis record retains the one webhook subscription between requests and redeployments.
+`dm-dot` uses **two independent Vercel projects** from one private repository. The repository-root API project, `dm-dot`, serves Go MCP/REST endpoints at `https://dm-dot.vercel.app`. The `docs/` project, `dm-dot-docs`, hosts the landing page and ZueDocs at `https://dm-dot.ashray.xyz`. Only the API uses Upstash Redis to retain the one webhook subscription.
 
 ## Prerequisites
 
@@ -25,7 +30,7 @@ dm-dot:subscription:v1
 
 This key holds the subscription callback URL, HMAC signing secret, ID, and expiration. Its Redis TTL follows the granted subscription duration. **It does not store message bodies.**
 
-## 2. Create the Vercel project
+## 2. Create the Vercel API project
 
 Import the GitHub repository in Vercel, or use the CLI from the repository root:
 
@@ -47,7 +52,7 @@ Configure:
 
 When linking a private repository, grant the Vercel GitHub integration access to **this repository**, not unnecessarily to every private repository.
 
-The checked-in `vercel.json` enables automatic Git deployments for `main` and disables automatic previews on other branches using the `**` branch pattern. Manual deployments remain possible. There is **no public documentation deployment** in this project.
+The repository-root `vercel.json` disables automatic Git deployments. A separate API GitHub Actions workflow deploys only changes to Go sources and API configuration, so changes to the docs do not consume API deployment quota. Manual production deployments are also supported. The API project does not build a static website.
 
 ## 3. Set Production secrets
 
@@ -71,7 +76,7 @@ The CLI also supports piping values through standard input for automation. Avoid
 
 **Important:** The API key is needed again to connect an MCP client. Keep a recoverable copy in your password manager or OS keychain. Do not rely on retrieving a sensitive Vercel environment variable later.
 
-## 4. Deploy and verify
+## 4. Deploy and verify the API
 
 ```bash
 make check
@@ -92,7 +97,24 @@ Expected outcomes:
 4. Before a dot subscribes, calling `send_to_dot` returns a **tool error** saying there is no active subscription. That is expected; it also confirms the application can query Redis.
 5. `POST /v1/messages` requires `Authorization: Bearer <DM_DOT_REST_API_KEY>`; with no subscription it returns `409`, and after delivery succeeds it returns `202`.
 
-Use [Getting started](getting-started.md) to connect ChatGPT and subscribe the dot. Follow [Troubleshooting](troubleshooting.md) if the platform's event source list lags behind the plugin UI.
+Use [Getting started](/docs/getting-started) to connect ChatGPT and subscribe the dot. Follow [Troubleshooting](/docs/troubleshooting) if the platform's event source list lags behind the plugin UI.
+
+## 5. Deploy the independent ZueDocs site
+
+The `docs/` directory contains a standalone Astro + ZueDocs application. Provision the **second Vercel project** with Root Directory `docs` and Framework Preset **Astro**:
+
+```bash
+cd docs
+bun install --frozen-lockfile
+bun run check
+bun run build
+vercel link --yes --project dm-dot-docs
+vercel deploy --prod --yes
+```
+
+Attach `dm-dot.ashray.xyz` to the docs project and create the DNS record Vercel requests in Cloudflare. Keep DNS-only during Vercel domain verification. No API, Redis, or MCP secrets should be configured in the docs project; all authenticated message sending remains at `dm-dot.vercel.app`.
+
+The docs project also disables Vercel Git auto-deployments. A separate, path-filtered GitHub Actions workflow deploys documentation changes (`docs/**`) without redeploying the API. The old API-domain homepage and documentation URLs redirect to the docs hostname.
 
 ## Updating or recovering
 
@@ -106,4 +128,4 @@ Use [Getting started](getting-started.md) to connect ChatGPT and subscribe the d
 
 Vercel project-wide authentication, an upstream access gateway, or private network protection can prevent ChatGPT from reaching `/mcp`. The application-level `?key=` check **does not bypass** those layers. Verify that external MCP clients can actually access the endpoint while the application still enforces its own secret. Do not disable account or workspace security controls without evaluating the consequences.
 
-Next: [Security](security.md) · [Troubleshooting](troubleshooting.md).
+Next: [Security](/docs/security) · [Troubleshooting](/docs/troubleshooting).

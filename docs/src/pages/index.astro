@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/site.css" />
-  <script src="/assets/site.js" defer></script>
+  <script is:inline src="/assets/site.js" defer></script>
 </head>
 <body class="landing-page">
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -27,7 +27,8 @@
       <nav class="top-nav" aria-label="Main navigation">
         <a href="#how">How it works</a>
         <a href="#principles">Principles</a>
-        <a href="/reference/">Reference</a>
+        <a href="/docs">Reference</a>
+        <a href="https://github.com/amxv/dm-dot" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
       <a href="#start" class="header-action">Get started <span aria-hidden="true">↗</span></a>
     </div>
@@ -76,17 +77,17 @@
     </section>
 
     <section class="send-section shell" id="start" aria-labelledby="send-title">
-      <div class="send-content"><div class="section-overline"><span class="index-label">02 / CONNECT</span><span class="section-head-rule"></span></div><h2 id="send-title">One connection.<br><em>Two ways in.</em></h2><p>Use the MCP tool from an agent conversation or call the same delivery engine directly from your application. Both arrive at the same subscribed dot.</p><a href="/reference/getting-started/" class="text-link dark-link">Read the setup guide <span aria-hidden="true">↗</span></a></div>
+      <div class="send-content"><div class="section-overline"><span class="index-label">02 / CONNECT</span><span class="section-head-rule"></span></div><h2 id="send-title">One connection.<br><em>Two ways in.</em></h2><p>Use the MCP tool from an agent conversation or call the same delivery engine directly from your application. Both arrive at the same subscribed dot.</p><a href="/docs/getting-started" class="text-link dark-link">Read the setup guide <span aria-hidden="true">↗</span></a></div>
       <div class="code-panel">
         <div class="code-head"><div class="code-tabs" role="tablist" aria-label="Integration examples"><button type="button" class="code-tab active" role="tab" aria-selected="true" aria-controls="code-mcp" id="tab-mcp" data-code-tab="mcp">MCP tool</button><button type="button" class="code-tab" role="tab" aria-selected="false" aria-controls="code-rest" id="tab-rest" data-code-tab="rest">REST API</button></div><button type="button" class="copy-code" data-copy-code aria-label="Copy the active code example"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 7V5.5A1.5 1.5 0 0 0 11 4H5.5A1.5 1.5 0 0 0 4 5.5V11A1.5 1.5 0 0 0 5.5 12.5H7" stroke="currentColor" stroke-width="1.5"/></svg><span>Copy</span></button></div>
         <div class="code-window"><div class="code-file"><span class="code-file-circle"></span><span data-file-label>send_to_dot</span></div>
-          <pre class="code-example" id="code-mcp" role="tabpanel" aria-labelledby="tab-mcp" data-code-content="mcp"><code>{
+          <pre class="code-example" id="code-mcp" role="tabpanel" aria-labelledby="tab-mcp" data-code-content="mcp"><code>&#123;
   "message": "Your agents have a note."
-}</code></pre>
+&#125;</code></pre>
           <pre class="code-example" id="code-rest" role="tabpanel" aria-labelledby="tab-rest" data-code-content="rest" hidden><code>curl -X POST https://your-host/v1/messages \
   -H "Authorization: Bearer $DM_DOT_REST_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"message":"Your agents have a note."}'</code></pre>
+  -d '&#123;"message":"Your agents have a note."&#125;'</code></pre>
         </div>
         <div class="code-status"><span class="status-square"></span><span>STATUS: ACCEPTED</span><span class="code-status-right">202 / WEBHOOK ACKNOWLEDGED</span></div>
       </div>
@@ -98,9 +99,9 @@
       </div>
     </section>
 
-    <section class="closing-section"><div class="shell closing-inner"><div class="closing-icon" aria-hidden="true"><span></span><i></i><span></span></div><span class="closing-eyebrow">KEEP THE CONTEXT MOVING</span><h2>Good ideas shouldn't<br><em>get lost between agents.</em></h2><p>Give everything you're building a simple way to reach the dot that's already working with you.</p><a class="button-primary button-light" href="/reference/">Explore the reference <span class="button-arrow" aria-hidden="true">↗</span></a><div class="closing-grid" aria-hidden="true"></div></div></section>
+    <section class="closing-section"><div class="shell closing-inner"><div class="closing-icon" aria-hidden="true"><span></span><i></i><span></span></div><span class="closing-eyebrow">KEEP THE CONTEXT MOVING</span><h2>Good ideas shouldn't<br><em>get lost between agents.</em></h2><p>Give everything you're building a simple way to reach the dot that's already working with you.</p><a class="button-primary button-light" href="/docs">Explore the reference <span class="button-arrow" aria-hidden="true">↗</span></a><div class="closing-grid" aria-hidden="true"></div></div></section>
   </main>
 
-  <footer class="site-footer"><div class="shell footer-main"><a href="/" class="footer-brand">dm<span>·</span>dot</a><span>One small connection. A lot more possibility.</span><nav aria-label="Footer navigation"><a href="/reference/">Reference</a><a href="/reference/rest-api/">REST API</a><a href="/reference/security/">Security</a><a href="#top">Back to top ↑</a></nav></div><div class="shell footer-bottom"><span>BUILT TO CONNECT, NOT COMPLICATE.</span><span>AN INDEPENDENT PROJECT. NOT AFFILIATED WITH OPENAI.</span></div></footer>
+  <footer class="site-footer"><div class="shell footer-main"><a href="/" class="footer-brand">dm<span>·</span>dot</a><span>One small connection. A lot more possibility.</span><nav aria-label="Footer navigation"><a href="/docs">Reference</a><a href="/docs/rest-api">REST API</a><a href="/docs/security">Security</a><a href="https://github.com/amxv/dm-dot" target="_blank" rel="noopener noreferrer">GitHub</a><a href="#top">Back to top ↑</a></nav></div><div class="shell footer-bottom"><span>BUILT TO CONNECT, NOT COMPLICATE.</span><span>AN INDEPENDENT PROJECT. NOT AFFILIATED WITH OPENAI.</span></div></footer>
 </body>
 </html>

@@ -1,4 +1,9 @@
-# Architecture
+---
+title: "Architecture"
+description: "Design decisions, subscription storage, and message delivery."
+order: 5
+category: Reference
+---
 
 `dm-dot` bridges **MCP tool invocations and authenticated REST requests** to **MCP Events webhook deliveries**. The receiver is ChatGPT, not a separately hosted language model.
 
@@ -77,7 +82,7 @@ The system is **at-least-once-attempted** for transient failures, but **not guar
 
 Only the callback URL, signing secret, subscription ID, and expiration. The application does **not** persist message bodies, previous event IDs, sender identities, processing results, or replies. Redis is not a message queue here.
 
-The stored signing secret is protected by Redis access controls and TLS in transit; **there is no application-level encryption of that field**. This is a trust decision for the single-user deployment model. See [Security](security.md).
+The stored signing secret is protected by Redis access controls and TLS in transit; **there is no application-level encryption of that field**. This is a trust decision for the single-user deployment model. See [Security](/docs/security).
 
 ## What is explicitly out of scope
 
