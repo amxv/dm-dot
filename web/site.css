@@ -185,7 +185,8 @@ img, svg { display: block; max-width: 100%; }
 .reveal-late { animation-delay: .1s; }.reveal-later { animation-delay: .22s; }.reveal-last { animation-delay: .35s; }.reveal-graphic { animation-delay: .33s; }
 @keyframes enter { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
 .has-js .process-card.reveal, .has-js .section-head.reveal { animation: none; opacity: 0; transform: translateY(24px); transition: opacity .7s ease,transform .7s ease; }
-.process-card.on-screen, .section-head.on-screen { opacity: 1; transform: translateY(0); }
+/* Match the reveal rule's specificity so the observer can unhide content. */
+.has-js .process-card.reveal.on-screen, .has-js .section-head.reveal.on-screen { opacity: 1; transform: translateY(0); }
 .process-card:nth-child(2) { transition-delay: .12s; }.process-card:nth-child(3) { transition-delay: .24s; }
 
 @media (max-width: 1250px) {
