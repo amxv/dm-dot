@@ -1,7 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
   "functions": {
-    "api/*.go": {
+    "api/mcp.go": {
+      "maxDuration": 60
+    },
+    "api/messages/index.go": {
       "maxDuration": 60
     }
   },
@@ -9,6 +16,10 @@
     {
       "source": "/mcp",
       "destination": "/api/mcp"
+    },
+    {
+      "source": "/v1/messages",
+      "destination": "/api/messages"
     }
   ],
   "git": {

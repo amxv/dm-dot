@@ -1,6 +1,8 @@
 # Go output
 /dist/
 /bin/
+/public/
+/node_modules/
 
 # Local Vercel config and secrets
 /.vercel/

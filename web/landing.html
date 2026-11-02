@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f8f4" />
+  <meta name="description" content="A direct line to your ChatGPT dot. Send a message from any AI agent or app via MCP or an authenticated REST API." />
+  <meta property="og:title" content="dm-dot — A direct line to your dot." />
+  <meta property="og:description" content="One small bridge between every agent and your ChatGPT dot. MCP-native, REST-ready, and event-driven." />
+  <meta property="og:type" content="website" />
+  <title>dm-dot — A direct line to your dot.</title>
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/site.css" />
+  <script src="/assets/site.js" defer></script>
+</head>
+<body class="landing-page">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header" id="top">
+    <div class="shell header-inner">
+      <a class="brand" href="/" aria-label="dm-dot home">
+        <span class="brand-symbol" aria-hidden="true"><span></span><i></i><span></span></span>
+        <span>dm<span class="brand-separator">·</span>dot</span>
+      </a>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="#how">How it works</a>
+        <a href="#principles">Principles</a>
+        <a href="/reference/">Reference</a>
+      </nav>
+      <a href="#start" class="header-action">Get started <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-headline-block">
+        <div class="hero-overline reveal"><span class="overline-stroke"></span><span>THE ONE-WAY BRIDGE FOR CHATGPT DOTS</span></div>
+        <h1 id="hero-title" class="hero-title reveal reveal-late">A direct line<br />to <em>your dot.</em></h1>
+        <p class="hero-description reveal reveal-later">Your agents have things to say. Give them a way to reach your ChatGPT dot, without another agent runtime, a polling loop, or a complicated stack.</p>
+        <div class="hero-actions reveal reveal-last">
+          <a class="button-primary" href="#start">Start connecting <span class="button-arrow" aria-hidden="true">↗</span></a>
+          <a class="text-link" href="#how">See how it works <span aria-hidden="true">↘</span></a>
+        </div>
+      </div>
+
+      <div class="hero-diagram reveal reveal-graphic" aria-label="Illustration: a message moves from an external application, through dm-dot, to a subscribed ChatGPT dot">
+        <div class="diagram-top"><span>MESSAGE ROUTE</span><span><span class="live-demo-indicator"></span> INTERACTIVE EXAMPLE</span></div>
+        <div class="diagram-paper">
+          <div class="diagram-grid" aria-hidden="true"></div>
+          <div class="diagram-corner diagram-corner-tl" aria-hidden="true"></div>
+          <div class="diagram-corner diagram-corner-br" aria-hidden="true"></div>
+          <div class="diagram-stage diagram-source"><span class="stage-icon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M7 10 3.5 14 7 18M21 10l3.5 4-3.5 4M16.75 7 11.25 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="stage-name">ANY AGENT</span><span class="stage-desc">Or app</span></div>
+          <div class="diagram-stage diagram-target"><span class="stage-icon target-icon" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M14 3.5 16.9 11.1 24.5 14 16.9 16.9 14 24.5 11.1 16.9 3.5 14 11.1 11.1 14 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="stage-name">YOUR DOT</span><span class="stage-desc">In ChatGPT</span></div>
+          <div class="diagram-beam" aria-hidden="true"><span class="diagram-beam-dots"></span><span class="diagram-pulse"></span></div>
+          <div class="diagram-hub" aria-hidden="true"><span class="hub-halo hub-halo-outer"></span><span class="hub-halo hub-halo-inner"></span><span class="hub-core"><span class="hub-logo">d<span>·</span></span></span></div>
+          <div class="diagram-message"><span class="message-caption">MESSAGE SENT</span><span class="message-bubble">Hey, keep me in the loop<span class="message-cursor">_</span></span><span class="message-check"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10 3.7 3.7L15.5 6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <div class="diagram-coordinate diagram-coordinate-left" aria-hidden="true">01 / SOURCE</div>
+          <div class="diagram-coordinate diagram-coordinate-right" aria-hidden="true">03 / DESTINATION</div>
+        </div>
+        <div class="diagram-bottom"><span>Webhook accepted <span class="diagram-bottom-dot">●</span> <span class="diagram-bottom-muted">Dot processing is asynchronous</span></span><button class="diagram-replay" type="button" data-replay>Replay <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 7v5h-5M20 12a8 8 0 1 0-2.4 5.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      </div>
+      <div class="hero-footnote"><span>ONE TOOL</span><span class="hero-footline"></span><span>ONE DOT</span><span class="hero-footline"></span><span>NO POLLING</span></div>
+    </section>
+
+    <section class="process-section" id="how" aria-labelledby="process-title">
+      <div class="shell">
+        <div class="section-head reveal"><div class="section-overline"><span class="index-label">01 / THE IDEA</span><span class="section-head-rule"></span></div><h2 id="process-title">It's that <em>simple.</em></h2><p>Three small steps. One remarkably useful connection.</p></div>
+        <div class="process-grid">
+          <article class="process-card reveal"><span class="process-number">01</span><div class="process-symbol"><svg viewBox="0 0 72 72" fill="none" aria-hidden="true"><rect x="12" y="16" width="48" height="40" rx="8" stroke="currentColor" stroke-width="1.4"/><path d="m24 30-6 6 6 6m24-12 6 6-6 6M41 25l-10 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Send a message.</h3><p>From any MCP client, another agent, or an application using a simple authenticated REST call.</p></article>
+          <article class="process-card reveal"><span class="process-number">02</span><div class="process-symbol process-symbol-orbit"><svg viewBox="0 0 72 72" fill="none" aria-hidden="true"><circle cx="36" cy="36" r="25" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 4"/><circle cx="36" cy="36" r="15" stroke="currentColor" stroke-width="1.4"/><circle cx="36" cy="36" r="4" fill="currentColor"/><path d="M36 4v7M36 61v7M4 36h7M61 36h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3>We pass it along.</h3><p>dm-dot delivers a signed webhook to ChatGPT through the dot's existing event subscription.</p></article>
+          <article class="process-card reveal"><span class="process-number">03</span><div class="process-symbol"><svg viewBox="0 0 72 72" fill="none" aria-hidden="true"><path d="M36 8 43 29l21 7-21 7-7 21-7-21-21-7 21-7 7-21Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M36 28v16M28 36h16" stroke="currentColor" stroke-width="1.2"/></svg></div><h3>Your dot takes it from there.</h3><p>It works with its own context and connected tools. No duplicate agent, no new model credentials.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="send-section shell" id="start" aria-labelledby="send-title">
+      <div class="send-content"><div class="section-overline"><span class="index-label">02 / CONNECT</span><span class="section-head-rule"></span></div><h2 id="send-title">One connection.<br><em>Two ways in.</em></h2><p>Use the MCP tool from an agent conversation or call the same delivery engine directly from your application. Both arrive at the same subscribed dot.</p><a href="/reference/getting-started/" class="text-link dark-link">Read the setup guide <span aria-hidden="true">↗</span></a></div>
+      <div class="code-panel">
+        <div class="code-head"><div class="code-tabs" role="tablist" aria-label="Integration examples"><button type="button" class="code-tab active" role="tab" aria-selected="true" aria-controls="code-mcp" id="tab-mcp" data-code-tab="mcp">MCP tool</button><button type="button" class="code-tab" role="tab" aria-selected="false" aria-controls="code-rest" id="tab-rest" data-code-tab="rest">REST API</button></div><button type="button" class="copy-code" data-copy-code aria-label="Copy the active code example"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 7V5.5A1.5 1.5 0 0 0 11 4H5.5A1.5 1.5 0 0 0 4 5.5V11A1.5 1.5 0 0 0 5.5 12.5H7" stroke="currentColor" stroke-width="1.5"/></svg><span>Copy</span></button></div>
+        <div class="code-window"><div class="code-file"><span class="code-file-circle"></span><span data-file-label>send_to_dot</span></div>
+          <pre class="code-example" id="code-mcp" role="tabpanel" aria-labelledby="tab-mcp" data-code-content="mcp"><code>{
+  "message": "Your agents have a note."
+}</code></pre>
+          <pre class="code-example" id="code-rest" role="tabpanel" aria-labelledby="tab-rest" data-code-content="rest" hidden><code>curl -X POST https://your-host/v1/messages \
+  -H "Authorization: Bearer $DM_DOT_REST_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"message":"Your agents have a note."}'</code></pre>
+        </div>
+        <div class="code-status"><span class="status-square"></span><span>STATUS: ACCEPTED</span><span class="code-status-right">202 / WEBHOOK ACKNOWLEDGED</span></div>
+      </div>
+    </section>
+
+    <section class="principles-section" id="principles" aria-labelledby="principles-title">
+      <div class="shell"><div class="section-overline"><span class="index-label">03 / BY DESIGN</span><span class="section-head-rule"></span></div><div class="principles-heading"><h2 id="principles-title">Less infrastructure.<br><em>More continuity.</em></h2><p>Everything essential to get your message to the right place. None of the parts that make a tiny bridge feel like another platform.</p></div>
+        <div class="principle-list"><article class="principle"><span class="principle-number">01</span><h3>Built for one dot.</h3><p>No recipient directories or routing complexity. One private destination that stays familiar.</p><span class="principle-arrow" aria-hidden="true">↗</span></article><article class="principle"><span class="principle-number">02</span><h3>Event-driven by nature.</h3><p>A message wakes the subscribed dot. No polling schedules or always-on workers.</p><span class="principle-arrow" aria-hidden="true">↗</span></article><article class="principle"><span class="principle-number">03</span><h3>Privacy, with clarity.</h3><p>Signed webhooks, separate API credentials, and no stored message history. Delivery is asynchronous, not guaranteed completion.</p><span class="principle-arrow" aria-hidden="true">↗</span></article></div>
+      </div>
+    </section>
+
+    <section class="closing-section"><div class="shell closing-inner"><div class="closing-icon" aria-hidden="true"><span></span><i></i><span></span></div><span class="closing-eyebrow">KEEP THE CONTEXT MOVING</span><h2>Good ideas shouldn't<br><em>get lost between agents.</em></h2><p>Give everything you're building a simple way to reach the dot that's already working with you.</p><a class="button-primary button-light" href="/reference/">Explore the reference <span class="button-arrow" aria-hidden="true">↗</span></a><div class="closing-grid" aria-hidden="true"></div></div></section>
+  </main>
+
+  <footer class="site-footer"><div class="shell footer-main"><a href="/" class="footer-brand">dm<span>·</span>dot</a><span>One small connection. A lot more possibility.</span><nav aria-label="Footer navigation"><a href="/reference/">Reference</a><a href="/reference/rest-api/">REST API</a><a href="/reference/security/">Security</a><a href="#top">Back to top ↑</a></nav></div><div class="shell footer-bottom"><span>BUILT TO CONNECT, NOT COMPLICATE.</span><span>AN INDEPENDENT PROJECT. NOT AFFILIATED WITH OPENAI.</span></div></footer>
+</body>
+</html>

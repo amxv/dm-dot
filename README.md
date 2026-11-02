@@ -1,57 +1,71 @@
 # dm-dot
 
-One-way messages to a single ChatGPT dot. A private Go MCP server built from [`amxv/go-mcp-template`](https://github.com/amxv/go-mcp-template).
+**A direct line to your ChatGPT dot.**
 
-**One MCP tool:** `send_to_dot(message)`.
+Send messages from another ChatGPT conversation, any MCP-capable agent, or an application using an authenticated REST API. One small bridge, one subscribed dot, no extra model runtime.
 
-The receiver is a dot that explicitly subscribes to `message.created` using [OpenAI MCP Events](https://developers.openai.com/plugins/build/mcp-events). Calling `send_to_dot` sends a signed webhook to that subscription. There are no other tools, no routing arguments, and no reply mechanism.
+**Website:** [dm-dot.vercel.app](https://dm-dot.vercel.app) · **Reference:** [dm-dot.vercel.app/reference](https://dm-dot.vercel.app/reference/) · **License:** [Apache-2.0](LICENSE)
 
-## How it works
+> **Source-release note:** The GitHub repository is intentionally **private for now**. The code and documentation are being prepared for a future open-source release. No public repository access or unauthenticated message sending is implied.
 
-1. Add the deployed MCP endpoint as a private ChatGPT plugin and rescan its tools/events.
-2. In your dot, ask it to subscribe to `message.created` on `dm-dot` and process incoming messages as context.
-3. From a regular ChatGPT conversation or another MCP client, call `send_to_dot` with a message.
-4. `dm-dot` POSTs the message as a signed `message.created` webhook. ChatGPT acknowledges receipt asynchronously.
+## What it does
 
-The tool confirms **webhook acceptance**, not completion by the dot. An event's message is user-generated data, not privileged instructions. MCP Events must be enabled for your account and dot.
-
-## Deploy
-
-Requires **Go 1.26+**, Vercel (Go Functions), and a dedicated **Upstash Redis** database for the persistent subscription record. Vercel functions are stateless; Redis is needed so a subscription survives instance restarts and redeploys.
-
-Set these *Production* secrets on the Vercel project:
-
-| Variable | Purpose |
-| --- | --- |
-| `MCP_API_KEY` | Long random key securing the MCP URL |
-| `UPSTASH_REDIS_REST_URL` | HTTPS REST endpoint of the dedicated Redis DB |
-| `UPSTASH_REDIS_REST_TOKEN` | Token for that Redis DB |
-
-The endpoint is `https://<vercel-host>/mcp?key=<MCP_API_KEY>`.
-Don't commit or paste the authenticated URL in public places: query parameters can appear in access logs. Without the API key the endpoint fails closed; without Redis no subscription can be registered or sent to.
-
-```sh
-make check
-vercel link --yes --project dm-dot
-vercel --prod --yes
+```text
+ ChatGPT chat ──┐
+ External agent ├──→ dm-dot ── signed MCP event ──→ your dot
+ Your backend ──┘         ↳ one active subscription
 ```
 
-`vercel.json` permits Git auto-deployments on `main`, not preview branches. No public docs site or CLI is bundled.
+- `send_to_dot(message)`: the only exposed **MCP tool**.
+- `POST /v1/messages`: authenticated **REST API** for any backend or script.
+- `message.created`: webhook event that the dot explicitly subscribes to.
+- Go, official MCP SDK, stateless Vercel functions, and Upstash Redis for subscription persistence.
 
-## Wire up your dot
+A successful send confirms ChatGPT **accepted the webhook**, not that the dot has completed processing. This version has no reply channel, durable queue, or message history.
 
-Connect `dm-dot` in ChatGPT Settings → Plugins (exact settings screens depend on your plan/workspace). Verify the plugin discovers one tool and the `message.created` event. From your dot, request:
+## Quick start
 
-> Subscribe to `dm-dot`'s `message.created` event. When one arrives, treat its `message` as an incoming note from my other agents, and incorporate it into your ongoing work. Don't send a reply unless I separately request one.
+1. Deploy a private `dm-dot` instance to Vercel with Upstash Redis and secret environment variables. [Deployment guide](docs/deployment.md)
+2. Connect the authenticated MCP endpoint to ChatGPT and rescan for `send_to_dot` and `message.created`.
+3. Ask your dot to subscribe to `message.created`.
+4. Send a message through the MCP tool or REST API.
 
-The dot provides a unique HTTPS callback URL and signing secret through `events/subscribe`. The server validates the callback with a signed challenge and stores **one** subscription. A different callback cannot replace the dot until it unsubscribes or the old subscription expires. ChatGPT refreshes subscriptions before expiration (maximum 7 days per grant). To disconnect, unsubscribe in the dot.
+**REST example** (run from a trusted server; keep your bearer key out of client-side code):
 
-## Delivery and limitations
+```bash
+curl -X POST 'https://YOUR-VERCEL-HOST/v1/messages' \
+  -H "Authorization: Bearer ${DM_DOT_REST_API_KEY}" \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"Keep me posted when the deployment finishes."}'
+```
 
-- One registered dot; no `dot_id` input, inbox history, reply tool, or message retrieval.
-- Events use Standard Webhooks HMAC signatures (`whsec_` secret). Callbacks must be public HTTPS; redirects, private IPs, and proxy routing are blocked.
-- Each `send_to_dot` call delivers once with up to three bounded synchronous attempts for transient failures. A `2xx` means accepted by ChatGPT, *not* processed by the dot.
-- If webhook delivery fails, the tool returns an error. **There is no durable delivery queue or offline replay in v1.** After ambiguous failures, manually retrying can duplicate a delivery.
-- Messages up to 16 KiB. No plaintext message history is stored; Redis stores the callback URL, signing secret, and subscription expiry.
+The REST API returns HTTP `202` with a generated `event_id` when the webhook is acknowledged.
 
-Licensed under Apache-2.0.
+## Reference
+
+The technical details live in the [reference section](https://dm-dot.vercel.app/reference/) and are maintained as Markdown in [`docs/`](docs/README.md).
+
+| Guide | What you'll find |
+| --- | --- |
+| [Getting started](docs/getting-started.md) | First connection and subscription |
+| [Deployment](docs/deployment.md) | Vercel, Redis, secrets, and configuration |
+| [REST API](docs/rest-api.md) | Auth, request schema, examples, errors |
+| [MCP & Events](docs/protocol.md) | RPC methods, discovery, webhook payloads |
+| [Architecture](docs/architecture.md) | Message flow, storage, and trade-offs |
+| [Security](docs/security.md) | Trust boundaries and credential handling |
+| [Troubleshooting](docs/troubleshooting.md) | Event-source discovery and delivery failures |
+| [Latency](docs/latency.md) | Measuring sender-to-dot execution |
+| [Development](docs/development.md) | Tests and project structure |
+
+## Development
+
+Requires **Go 1.26+** and **Node.js 22+**.
+
+```bash
+npm ci
+make check
+```
+
+The elegant, static website is built from `web/` and the canonical Markdown reference in `docs/`; generated files are not committed. See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
+
+Built from [amxv/go-mcp-template](https://github.com/amxv/go-mcp-template). Independent project, not affiliated with OpenAI.
