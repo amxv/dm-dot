@@ -23,7 +23,7 @@ In ChatGPT, add a custom/private MCP server using your production endpoint:
 https://YOUR-VERCEL-HOST/mcp?key=YOUR-MCP-API-KEY
 ```
 
-The key is already embedded in the URL. Configure the connection according to ChatGPT's supported authentication options for such an endpoint. **Never publish or screenshot the full authenticated URL.**
+When adding the MCP server in ChatGPT, choose **No authentication**. The API key is already included in the URL (`?key=...`), so you don't need to configure a separate authentication method. **Never publish or screenshot the full authenticated URL.**
 
 After connecting, **rescan** the MCP server. Confirm its plugin details show:
 
