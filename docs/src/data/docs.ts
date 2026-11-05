@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "dm-dot",
   strapline: "A direct line to your ChatGPT dot",
   description:
-    "Send one-way messages to a subscribed ChatGPT dot using MCP Events or the authenticated REST API.",
+    "Send one-way messages to a subscribed ChatGPT dot from MCP, REST, or the native CLI.",
   repoUrl: "https://github.com/amxv/dm-dot",
   accentColor: "#397850",
   accentColorDark: "#ace58d",
@@ -13,7 +13,7 @@ export const siteConfig = {
     },
     {
       title: "Integrations",
-      text: "One MCP tool, one authenticated REST endpoint, and one opted-in dot. No reply channel or polling."
+      text: "One MCP tool, one authenticated REST endpoint, a native CLI, and one opted-in dot. No reply channel or polling."
     },
     {
       title: "Source",

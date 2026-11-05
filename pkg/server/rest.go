@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
-)
 
-const maxRESTBodyBytes = 32 * 1024
+	"github.com/amxv/dm-dot/pkg/message"
+)
 
 // RESTHandler accepts server-to-server requests using a REST-specific bearer
 // token. It never accepts the MCP query-string key as authentication.
@@ -47,18 +47,16 @@ func RESTHandler() http.Handler {
 			return
 		}
 
-		body, err := io.ReadAll(io.LimitReader(r.Body, maxRESTBodyBytes+1))
+		body, err := io.ReadAll(io.LimitReader(r.Body, message.MaxRESTBodyBytes+1))
 		if err != nil {
 			restError(w, http.StatusBadRequest, "invalid_body", "Could not read request body")
 			return
 		}
-		if len(body) > maxRESTBodyBytes {
+		if len(body) > message.MaxRESTBodyBytes {
 			restError(w, http.StatusRequestEntityTooLarge, "payload_too_large", "JSON request is too large")
 			return
 		}
-		var payload struct {
-			Message string `json:"message"`
-		}
+		var payload message.Request
 		decoder := json.NewDecoder(strings.NewReader(string(body)))
 		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&payload); err != nil {
@@ -86,10 +84,7 @@ func RESTHandler() http.Handler {
 		}
 
 		w.WriteHeader(http.StatusAccepted)
-		_ = json.NewEncoder(w).Encode(map[string]string{
-			"status":   "accepted",
-			"event_id": eventID,
-		})
+		_ = json.NewEncoder(w).Encode(message.Accepted{Status: "accepted", EventID: eventID})
 	})
 }
 

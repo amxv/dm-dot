@@ -1,9 +1,16 @@
 SHELL := /bin/bash
 
-.PHONY: fmt test vet docs-install docs-check docs-build check
+.PHONY: fmt test vet build-cli installers-check docs-install docs-check docs-build check
 
 fmt:
-	gofmt -w $$(find api pkg -name '*.go')
+	gofmt -w $$(find api pkg cmd internal -name '*.go')
+
+build-cli:
+	go build -o bin/dm-dot ./cmd/dm-dot
+
+installers-check:
+	sh -n docs/public/install.sh
+	sh scripts/test-installer.sh
 
 test:
 	go test ./...
@@ -20,4 +27,4 @@ docs-check:
 docs-build:
 	cd docs && bun run build
 
-check: test vet docs-check docs-build
+check: test vet installers-check docs-check docs-build

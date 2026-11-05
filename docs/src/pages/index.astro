@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#f7f8f4" />
-  <meta name="description" content="A direct line to your ChatGPT dot. Send a message from any AI agent or app via MCP or an authenticated REST API." />
+  <meta name="description" content="A direct line to your ChatGPT dot. Send a message via MCP, REST, or the native CLI." />
   <meta property="og:title" content="dm-dot — A direct line to your dot." />
   <meta property="og:description" content="One small bridge between every agent and your ChatGPT dot. MCP-native, REST-ready, and event-driven." />
   <meta property="og:type" content="website" />
@@ -69,7 +69,7 @@
       <div class="shell">
         <div class="section-head reveal"><div class="section-overline"><span class="index-label">01 / THE IDEA</span><span class="section-head-rule"></span></div><h2 id="process-title">It's that <em>simple.</em></h2><p>Three small steps. One remarkably useful connection.</p></div>
         <div class="process-grid">
-          <article class="process-card reveal"><span class="process-number">01</span><div class="process-symbol"><svg viewBox="0 0 72 72" fill="none" aria-hidden="true"><rect x="12" y="16" width="48" height="40" rx="8" stroke="currentColor" stroke-width="1.4"/><path d="m24 30-6 6 6 6m24-12 6 6-6 6M41 25l-10 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Send a message.</h3><p>From any MCP client, another agent, or an application using a simple authenticated REST call.</p></article>
+          <article class="process-card reveal"><span class="process-number">01</span><div class="process-symbol"><svg viewBox="0 0 72 72" fill="none" aria-hidden="true"><rect x="12" y="16" width="48" height="40" rx="8" stroke="currentColor" stroke-width="1.4"/><path d="m24 30-6 6 6 6m24-12 6 6-6 6M41 25l-10 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Send a message.</h3><p>From an MCP client, local CLI, or application using authenticated REST.</p></article>
           <article class="process-card reveal"><span class="process-number">02</span><div class="process-symbol process-symbol-orbit"><svg viewBox="0 0 72 72" fill="none" aria-hidden="true"><circle cx="36" cy="36" r="25" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 4"/><circle cx="36" cy="36" r="15" stroke="currentColor" stroke-width="1.4"/><circle cx="36" cy="36" r="4" fill="currentColor"/><path d="M36 4v7M36 61v7M4 36h7M61 36h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><h3>We pass it along.</h3><p>dm-dot delivers a signed webhook to ChatGPT through the dot's existing event subscription.</p></article>
           <article class="process-card reveal"><span class="process-number">03</span><div class="process-symbol"><svg viewBox="0 0 72 72" fill="none" aria-hidden="true"><path d="M36 8 43 29l21 7-21 7-7 21-7-21-21-7 21-7 7-21Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M36 28v16M28 36h16" stroke="currentColor" stroke-width="1.2"/></svg></div><h3>Your dot takes it from there.</h3><p>It works with its own context and connected tools. No duplicate agent, no new model credentials.</p></article>
         </div>
@@ -77,9 +77,9 @@
     </section>
 
     <section class="send-section shell" id="start" aria-labelledby="send-title">
-      <div class="send-content"><div class="section-overline"><span class="index-label">02 / CONNECT</span><span class="section-head-rule"></span></div><h2 id="send-title">One connection.<br><em>Two ways in.</em></h2><p>Use the MCP tool from an agent conversation or call the same delivery engine directly from your application. Both arrive at the same subscribed dot.</p><a href="/docs/getting-started" class="text-link dark-link">Read the setup guide <span aria-hidden="true">↗</span></a></div>
+      <div class="send-content"><div class="section-overline"><span class="index-label">02 / CONNECT</span><span class="section-head-rule"></span></div><h2 id="send-title">One connection.<br><em>Three ways in.</em></h2><p>Send from an MCP conversation, your terminal with the CLI, or an application using REST. All three arrive at the same subscribed dot.</p><a href="/docs/getting-started" class="text-link dark-link">Read the setup guide <span aria-hidden="true">↗</span></a></div>
       <div class="code-panel">
-        <div class="code-head"><div class="code-tabs" role="tablist" aria-label="Integration examples"><button type="button" class="code-tab active" role="tab" aria-selected="true" aria-controls="code-mcp" id="tab-mcp" data-code-tab="mcp">MCP tool</button><button type="button" class="code-tab" role="tab" aria-selected="false" aria-controls="code-rest" id="tab-rest" data-code-tab="rest">REST API</button></div><button type="button" class="copy-code" data-copy-code aria-label="Copy the active code example"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 7V5.5A1.5 1.5 0 0 0 11 4H5.5A1.5 1.5 0 0 0 4 5.5V11A1.5 1.5 0 0 0 5.5 12.5H7" stroke="currentColor" stroke-width="1.5"/></svg><span>Copy</span></button></div>
+        <div class="code-head"><div class="code-tabs" role="tablist" aria-label="Integration examples"><button type="button" class="code-tab active" role="tab" aria-selected="true" aria-controls="code-mcp" id="tab-mcp" data-code-tab="mcp">MCP tool</button><button type="button" class="code-tab" role="tab" aria-selected="false" aria-controls="code-rest" id="tab-rest" data-code-tab="rest">REST API</button><button type="button" class="code-tab" role="tab" aria-selected="false" aria-controls="code-cli" id="tab-cli" data-code-tab="cli">CLI</button></div><button type="button" class="copy-code" data-copy-code aria-label="Copy the active code example"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="9" height="9" rx="1.8" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 7V5.5A1.5 1.5 0 0 0 11 4H5.5A1.5 1.5 0 0 0 4 5.5V11A1.5 1.5 0 0 0 5.5 12.5H7" stroke="currentColor" stroke-width="1.5"/></svg><span>Copy</span></button></div>
         <div class="code-window"><div class="code-file"><span class="code-file-circle"></span><span data-file-label>send_to_dot</span></div>
           <pre class="code-example" id="code-mcp" role="tabpanel" aria-labelledby="tab-mcp" data-code-content="mcp"><code>&#123;
   "message": "Your agents have a note."
@@ -88,6 +88,7 @@
   -H "Authorization: Bearer $DM_DOT_REST_API_KEY" \
   -H "Content-Type: application/json" \
   -d '&#123;"message":"Your agents have a note."&#125;'</code></pre>
+          <pre class="code-example" id="code-cli" role="tabpanel" aria-labelledby="tab-cli" data-code-content="cli" hidden><code>dm-dot send "Your agents have a note."</code></pre>
         </div>
         <div class="code-status"><span class="status-square"></span><span>STATUS: ACCEPTED</span><span class="code-status-right">202 / WEBHOOK ACKNOWLEDGED</span></div>
       </div>
@@ -102,6 +103,6 @@
     <section class="closing-section"><div class="shell closing-inner"><div class="closing-icon" aria-hidden="true"><span></span><i></i><span></span></div><span class="closing-eyebrow">KEEP THE CONTEXT MOVING</span><h2>Good ideas shouldn't<br><em>get lost between agents.</em></h2><p>Give everything you're building a simple way to reach the dot that's already working with you.</p><a class="button-primary button-light" href="/docs">Explore the reference <span class="button-arrow" aria-hidden="true">↗</span></a><div class="closing-grid" aria-hidden="true"></div></div></section>
   </main>
 
-  <footer class="site-footer"><div class="shell footer-main"><a href="/" class="footer-brand">dm<span>·</span>dot</a><span>One small connection. A lot more possibility.</span><nav aria-label="Footer navigation"><a href="/docs">Reference</a><a href="/docs/rest-api">REST API</a><a href="/docs/security">Security</a><a href="https://github.com/amxv/dm-dot" target="_blank" rel="noopener noreferrer">GitHub</a><a href="#top">Back to top ↑</a></nav></div><div class="shell footer-bottom"><span>BUILT TO CONNECT, NOT COMPLICATE.</span><span>AN INDEPENDENT PROJECT. NOT AFFILIATED WITH OPENAI.</span></div></footer>
+  <footer class="site-footer"><div class="shell footer-main"><a href="/" class="footer-brand">dm<span>·</span>dot</a><span>One small connection. A lot more possibility.</span><nav aria-label="Footer navigation"><a href="/docs">Reference</a><a href="/docs/rest-api">REST API</a><a href="/docs/cli">CLI</a><a href="/docs/security">Security</a><a href="https://github.com/amxv/dm-dot" target="_blank" rel="noopener noreferrer">GitHub</a><a href="#top">Back to top ↑</a></nav></div><div class="footer-bottom shell"><span>BUILT TO CONNECT, NOT COMPLICATE.</span><span>AN INDEPENDENT PROJECT. NOT AFFILIATED WITH OPENAI.</span></div></footer>
 </body>
 </html>

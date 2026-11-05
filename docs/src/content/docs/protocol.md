@@ -13,7 +13,7 @@ POST https://YOUR-VERCEL-HOST/mcp?key=YOUR-MCP-API-KEY
 
 `MCP_API_KEY` is a **shared connection credential**. Do not paste its actual value in examples, issue reports, terminal history, or logs. Without a valid key, requests are rejected before reaching the MCP server.
 
-This page covers MCP Events. Applications using normal HTTP can call the **separate authenticated** [REST API](/docs/rest-api) at `POST /v1/messages`.
+This page covers MCP Events. Applications using normal HTTP can call the **separate authenticated** [REST API](/docs/rest-api) at `POST /v1/messages`; local agents can use the [native CLI](/docs/cli), which calls that REST endpoint.
 
 ## Public MCP tool
 

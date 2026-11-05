@@ -58,6 +58,8 @@ Or call the `send_to_dot` tool from another authenticated MCP client with:
 }
 ```
 
+You can also [install the CLI](/docs/cli) and run `dm-dot send "Hello from my local coding agent"` after configuring your API URL and REST token. The CLI shares the same delivery contract through the REST endpoint.
+
 When a callback returns HTTP `2xx`, the tool reports something like:
 
 ```text

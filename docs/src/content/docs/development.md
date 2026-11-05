@@ -5,7 +5,7 @@ order: 9
 category: Guides
 ---
 
-`dm-dot` is deliberately small: a Go MCP + REST backend and an Astro + ZueDocs site restored from the original Go MCP template. All operational details live in ZueDocs, not the marketing landing page.
+`dm-dot` is deliberately small: a Go MCP + REST backend, a native Go CLI, and an Astro + ZueDocs site restored from the original Go MCP template. All operational details live in ZueDocs, not the marketing landing page.
 
 ## Project structure
 
@@ -13,6 +13,14 @@ category: Guides
 api/mcp.go                 MCP Vercel Function
 api/messages/index.go      REST Vercel Function
 pkg/server/                Authentication, tools, events, Redis, webhook delivery
+pkg/message/               Shared message request/response and validation contract
+pkg/client/                Authenticated REST sender for local callers
+cmd/dm-dot/                CLI entry point
+internal/cli/              CLI commands and stdin/file handling
+internal/config/           Optional per-user CLI configuration
+internal/upgrade/          Latest-release checks and explicit upgrades
+docs/public/install.*      Website-hosted native CLI installers
+.github/workflows/release.yml    Six-platform-architecture binary release matrix
 docs/src/pages/index.astro       Landing page design (Astro)
 docs/src/pages/docs/            ZueDocs routes, layouts, and code enhancements
 docs/src/content/docs/          Canonical technical Markdown documents
@@ -30,6 +38,7 @@ Requires Go 1.26+, Node.js 22+, and Bun 1.4+.
 ```bash
 go test ./...
 go vet ./...
+go build -o bin/dm-dot ./cmd/dm-dot
 make docs-install
 make docs-check
 make check
@@ -53,7 +62,11 @@ The official Go MCP SDK implements tools, transport and version negotiation. The
 
 Keep regression coverage for `initialize` **and** MCP 2.0 `server/discover`. A correct `events/list` alone is insufficient for ChatGPT's subscription discovery.
 
-The common `SendMessage` function is used by both the MCP tool and REST ingress. A change to message validation, subscription storage, signing or retries must be tested through **both** surfaces.
+The common `SendMessage` function is used by both the MCP tool and REST ingress. The CLI uses the REST endpoint with a shared `pkg/message` contract. A change to message validation, subscription storage, signing or retries must be tested through **all three** surfaces.
+
+## CLI publishing
+
+`docs/public/install.sh` and `install.ps1` are served at the documentation site's root. The tag-triggered GitHub Actions workflow builds `darwin`, `linux`, and `windows` binaries for `amd64` and `arm64`, creates `SHA256SUMS`, and publishes a GitHub Release. The installers select the right asset and verify its checksum before replacing a local binary. Releases are tagged `vMAJOR.MINOR.PATCH` from `main` after checks pass. Use `dm-dot upgrade --check` to inspect newer releases.
 
 ## Testing and security
 

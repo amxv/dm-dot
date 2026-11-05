@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
+
+	"github.com/amxv/dm-dot/pkg/message"
 )
 
 var (
-	ErrInvalidMessage       = errors.New("message must contain between 1 and 16384 UTF-8 bytes")
+	ErrInvalidMessage       = message.ErrInvalidMessage
 	ErrNoActiveSubscription = errors.New("no active dot subscription")
 	ErrSubscriptionStorage  = errors.New("subscription storage unavailable")
 	ErrWebhookDelivery      = errors.New("webhook delivery failed")
@@ -17,9 +18,9 @@ var (
 // SendMessage is shared by the MCP tool and the REST API. A nil error only
 // means the ChatGPT webhook accepted the event, not that the dot processed it.
 func SendMessage(ctx context.Context, input string) (string, error) {
-	message := strings.TrimSpace(input)
-	if len(message) == 0 || len(message) > 16*1024 {
-		return "", ErrInvalidMessage
+	normalized, err := message.Normalize(input)
+	if err != nil {
+		return "", err
 	}
 
 	sub, err := (subscriptionStore{}).get(ctx)
@@ -30,7 +31,7 @@ func SendMessage(ctx context.Context, input string) (string, error) {
 		return "", ErrNoActiveSubscription
 	}
 
-	eventID, err := deliverMessage(ctx, *sub, message)
+	eventID, err := deliverMessage(ctx, *sub, normalized)
 	if err != nil {
 		return "", fmt.Errorf("%w: %v", ErrWebhookDelivery, err)
 	}
