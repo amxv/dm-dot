@@ -5,6 +5,7 @@ package message
 import (
 	"errors"
 	"strings"
+	"unicode/utf8"
 )
 
 const (
@@ -17,7 +18,7 @@ var ErrInvalidMessage = errors.New("message must contain between 1 and 16384 UTF
 // Normalize applies the exact same trimming and byte limit for every sender.
 func Normalize(input string) (string, error) {
 	value := strings.TrimSpace(input)
-	if len(value) == 0 || len(value) > MaxBytes {
+	if len(value) == 0 || len(value) > MaxBytes || !utf8.ValidString(value) {
 		return "", ErrInvalidMessage
 	}
 	return value, nil

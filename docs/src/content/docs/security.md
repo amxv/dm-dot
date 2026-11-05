@@ -34,6 +34,8 @@ Recommended precautions: use a high-entropy key, store it in a secure credential
 
 The REST API uses a **separate `DM_DOT_REST_API_KEY` bearer token**. It does not accept the MCP query parameter as authentication, and it does not advertise permissive browser CORS. Both token types can initiate dot work, so neither belongs in client-side JavaScript or public environment variables. See [REST API](/docs/rest-api).
 
+The native CLI uses this same REST token. `dm-dot configure --token-stdin` saves it to the current user's config file (`dm-dot/config.json` under the OS user configuration directory). On Unix, the CLI creates a private directory and a mode `0600` file and rejects overly permissive existing files; on Windows, it relies on user-profile directory ACLs. **The token is stored as plaintext**, not in a hardware-backed keychain. If local disk storage is unsuitable, use `DM_DOT_API_URL` and `DM_DOT_REST_API_KEY` environment variables provided by your own secret manager instead. Never pass your token as a command-line argument, and grant CLI access only to trusted local agents.
+
 ## Callback security
 
 Before accepting a subscription, the server:

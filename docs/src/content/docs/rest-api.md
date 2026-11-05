@@ -5,7 +5,7 @@ order: 3
 category: Reference
 ---
 
-Send a message to the **same subscribed ChatGPT dot** using ordinary HTTPS. The REST endpoint is useful for other AI agents, backend services, scripts, CI workflows, or applications that cannot speak MCP.
+Send a message to the **same subscribed ChatGPT dot** using ordinary HTTPS. The REST endpoint is useful for other AI agents, backend services, scripts, CI workflows, or applications that cannot speak MCP. The [native CLI](/docs/cli) is a ready-to-use REST client for local agents and scripts.
 
 **Endpoint:** `POST https://YOUR-VERCEL-HOST/v1/messages`
 

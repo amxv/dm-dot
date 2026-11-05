@@ -59,7 +59,7 @@ func (c Client) Send(ctx context.Context, input string) (message.Accepted, error
 	if err != nil {
 		return zero, err
 	}
-	endpoint, err := endpointURL(c.APIURL)
+	endpoint, err := EndpointURL(c.APIURL)
 	if err != nil {
 		return zero, err
 	}
@@ -117,7 +117,9 @@ func (c Client) Send(ctx context.Context, input string) (message.Accepted, error
 	return accepted, nil
 }
 
-func endpointURL(raw string) (string, error) {
+// EndpointURL validates a deployment URL and resolves the single REST route.
+// Credentials embedded in the URL are rejected to avoid accidental leakage.
+func EndpointURL(raw string) (string, error) {
 	if strings.TrimSpace(raw) == "" {
 		return "", ErrMissingURL
 	}

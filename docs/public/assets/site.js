@@ -22,7 +22,7 @@
       tab.tabIndex = active ? 0 : -1;
     }
     for (const panel of panels) panel.hidden = panel.dataset.codeContent !== name;
-    if (fileLabel) fileLabel.textContent = name === 'mcp' ? 'send_to_dot' : 'POST /v1/messages';
+    if (fileLabel) fileLabel.textContent = name === 'mcp' ? 'send_to_dot' : name === 'cli' ? 'dm-dot send' : 'POST /v1/messages';
   }
   for (const tab of tabs) {
     tab.addEventListener('click', () => activateTab(tab.dataset.codeTab));

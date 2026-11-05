@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 
-"github.com/amxv/dm-dot/pkg/message"
+	"github.com/amxv/dm-dot/pkg/message"
 )
 
 // RESTHandler accepts server-to-server requests using a REST-specific bearer
@@ -47,16 +47,16 @@ func RESTHandler() http.Handler {
 			return
 		}
 
-body, err := io.ReadAll(io.LimitReader(r.Body, message.MaxRESTBodyBytes+1))
+		body, err := io.ReadAll(io.LimitReader(r.Body, message.MaxRESTBodyBytes+1))
 		if err != nil {
 			restError(w, http.StatusBadRequest, "invalid_body", "Could not read request body")
 			return
 		}
-if len(body) > message.MaxRESTBodyBytes {
+		if len(body) > message.MaxRESTBodyBytes {
 			restError(w, http.StatusRequestEntityTooLarge, "payload_too_large", "JSON request is too large")
 			return
 		}
-var payload message.Request
+		var payload message.Request
 		decoder := json.NewDecoder(strings.NewReader(string(body)))
 		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&payload); err != nil {
@@ -84,7 +84,7 @@ var payload message.Request
 		}
 
 		w.WriteHeader(http.StatusAccepted)
-_ = json.NewEncoder(w).Encode(message.Accepted{Status: "accepted", EventID: eventID})
+		_ = json.NewEncoder(w).Encode(message.Accepted{Status: "accepted", EventID: eventID})
 	})
 }
 

@@ -16,6 +16,7 @@ func TestNormalize(t *testing.T) {
 		{name: "UTF-8 byte limit", input: strings.Repeat("💬", MaxBytes/4+1), invalid: true},
 		{name: "empty", input: "\t \n", invalid: true},
 		{name: "too long", input: strings.Repeat("a", MaxBytes+1), invalid: true},
+		{name: "invalid UTF-8", input: string([]byte{0xff, 0xfe}), invalid: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			got, err := Normalize(tc.input)
