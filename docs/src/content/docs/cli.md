@@ -48,7 +48,11 @@ printf %s "$DM_DOT_REST_API_KEY" | dm-dot configure \
 dm-dot config show
 ```
 
-`--token-stdin` reads the key from standard input without putting it in a shell argument or printing it. The CLI stores the key in a per-user configuration file with private permissions on Unix (mode `0600`). **It is stored as plaintext**, so only configure trusted machines or trusted OS users. On Windows, the file inherits the user profile's ACLs. Use `dm-dot config clear` to remove the saved configuration. For key rotation, repeat `configure` with your new REST key.
+`--token-stdin` reads the key from standard input without putting it in a shell argument or printing it. The CLI saves the REST token in your operating system's **native credential store**: macOS Keychain, Windows Credential Manager, or Linux Secret Service (for example GNOME Keyring). The local config file stores **only the API URL**, never the bearer token. On macOS and Linux, the URL-only file has mode `0600`.
+
+On Linux, an active D-Bus Secret Service and unlocked credential collection are required for saved credentials. For headless servers without one, use Option B instead; the CLI **never falls back to plaintext credential storage**. Use `dm-dot config clear` to remove the native credential associated with the current API origin and its local URL configuration. For key rotation or changing the API host, rerun `configure` with the corresponding REST key.
+
+**Automatic v0.1 migration:** When v0.2 first accesses an existing `config.json` containing a plaintext token, it stores the key in the native OS credential manager, confirms that it can read the key back, and atomically replaces the config with a URL-only file. If the credential store is unavailable, the migration fails safely and the old config is left untouched rather than losing access. Restore/unlock the OS keyring and retry. If you want to use environment variables only, first clear the old local config.
 
 Option B: Do not save credentials on disk. Supply the variables from a shell environment, secret manager, or CI secret store:
 
@@ -58,7 +62,7 @@ export DM_DOT_API_URL="https://YOUR-API-HOST"
 dm-dot send "Hello from my agent"
 ```
 
-Environment values override saved settings. `--url` overrides the deployment URL for one `send` command. The CLI rejects non-HTTPS URLs and URLs containing query-string credentials.
+Environment values can override saved settings **only when they target the same API origin**. `--url` also accepts only a URL on the already configured origin. The CLI rejects non-HTTPS URLs, embedded credentials, query parameters, and attempts to redirect a saved or environment-provided token to another host or port. To switch to a different API origin, run `dm-dot configure` with the corresponding key (or clear the saved config and provide both `DM_DOT_API_URL` and `DM_DOT_REST_API_KEY`). For an environment-only agent, both variables are required; the CLI cannot infer a safe destination for a standalone key.
 
 ## Send a message
 
@@ -101,11 +105,11 @@ dm-dot upgrade
 
 `upgrade --check` compares your installed version with the latest stable GitHub Release. `upgrade` only replaces the executable when a newer version exists. It downloads the installer from this documentation site and pins it to the chosen release, preserving checksum verification. On Windows, the upgrade helper completes replacement after the CLI process exits.
 
-Alternatively, set `CLI_VERSION=0.1.0` when running the website installer to pin an exact stable release. No background or automatic upgrades are enabled.
+Alternatively, set `CLI_VERSION=0.2.0` when running the website installer to pin an exact stable release. No background or automatic upgrades are enabled.
 
 ## Automation and security
 
-Treat the CLI as a **trusted write-capable operation**. Any process with access to the REST key can send a note that may trigger the dot's own tools, subject to the dot's permissions and confirmation requirements. Never expose the token in a command-line argument or log. Keep shell scripts, CI jobs, and local agent permissions scoped appropriately.
+Treat the CLI as a **trusted write-capable operation**. Any process able to invoke the CLI with access to your unlocked native credential store can send a note that may trigger the dot's own tools, subject to the dot's permissions and confirmation requirements. Native storage prevents a plaintext copy of the key in the config file, but **does not isolate untrusted processes running under the same user**. Never expose the token in a command-line argument or log. Keep shell scripts, CI jobs, and local agent permissions scoped appropriately.
 
 Both POSIX and Windows installers support AMD64 and ARM64. If your target architecture is not supported, the installer stops without replacing the current executable.
 

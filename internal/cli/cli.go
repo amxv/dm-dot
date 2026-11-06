@@ -35,12 +35,15 @@ Usage:
 The CLI sends via POST /v1/messages. ChatGPT webhook acceptance does not
 mean your dot has processed the message. There is no reply channel.
 
-Configuration (environment variables override saved config):
+Configuration (environment values must match any configured API origin):
   DM_DOT_API_URL        HTTPS URL of YOUR deployed dm-dot API
   DM_DOT_REST_API_KEY   REST bearer token (not the MCP key)
 
-Configure once to use dm-dot from scripts and local agents without exporting
-credentials. The token is read from stdin, not command-line arguments.
+Configure once to store the key in macOS Keychain, Windows Credential Manager,
+or Linux Secret Service without exporting credentials. The token is read from
+stdin, not command-line arguments. Previously saved plaintext keys migrate
+automatically on first use after upgrade; no plaintext fallback is allowed.
+To change the destination, rerun configure with the corresponding REST token.
 Run 'dm-dot send --help' for send-specific usage.
 `
 
@@ -117,12 +120,9 @@ func send(ctx context.Context, args []string, stdin io.Reader, stdout, stderr io
 	} else {
 		input = strings.Join(words, " ")
 	}
-	cfg, err := config.Effective()
+	cfg, err := config.Effective(*urlOverride)
 	if err != nil {
 		return err
-	}
-	if *urlOverride != "" {
-		cfg.APIURL = *urlOverride
 	}
 	result, err := (client.Client{APIURL: cfg.APIURL, Token: cfg.Token, HTTPClient: httpClient}).Send(ctx, input)
 	if err != nil {
@@ -171,10 +171,10 @@ func configure(args []string, stdin io.Reader, stdout, stderr io.Writer) error {
 	if key == "" || strings.ContainsAny(key, " \n\r\t") {
 		return errors.New("REST key must be a nonempty bearer token")
 	}
-	if err := config.Save(config.Settings{APIURL: *endpoint, Token: key}); err != nil {
+	if err := config.Configure(*endpoint, key); err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintln(stdout, "Saved dm-dot configuration for this user (token not displayed).")
+	_, _ = fmt.Fprintln(stdout, "Saved API origin and native OS credential (token not displayed).")
 	return nil
 }
 
@@ -189,7 +189,7 @@ func showConfig(args []string, stdout io.Writer) error {
 		_, _ = fmt.Fprintln(stdout, "Saved dm-dot configuration cleared.")
 		return nil
 	}
-	cfg, err := config.Effective()
+	cfg, err := config.Effective("")
 	if err != nil {
 		return err
 	}

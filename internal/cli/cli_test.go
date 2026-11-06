@@ -8,18 +8,16 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
+
+	"github.com/amxv/dm-dot/internal/config"
 )
 
 func prepareConfig(t *testing.T) {
 	t.Helper()
-	if runtime.GOOS == "windows" {
-		t.Setenv("AppData", t.TempDir())
-	} else {
-		t.Setenv("XDG_CONFIG_HOME", t.TempDir())
-	}
+	undo := config.SetFilePathForTesting(filepath.Join(t.TempDir(), "dm-dot", "config.json"))
+	t.Cleanup(undo)
 	t.Setenv("DM_DOT_REST_API_KEY", "")
 	t.Setenv("DM_DOT_API_URL", "")
 }
@@ -31,7 +29,7 @@ func run(t *testing.T, args []string, stdin string, httpClient *http.Client) (st
 	return out.String(), stderr.String(), err
 }
 
-func TestConfigureSendAndClear(t *testing.T) {
+func TestEnvironmentSendAndClear(t *testing.T) {
 	prepareConfig(t)
 	var received string
 	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -47,11 +45,9 @@ func TestConfigureSendAndClear(t *testing.T) {
 		_, _ = io.WriteString(w, `{"status":"accepted","event_id":"evt_test"}`)
 	}))
 	defer server.Close()
-	out, _, err := run(t, []string{"configure", "--url", server.URL, "--token-stdin"}, "secret-token\n", nil)
-	if err != nil || strings.Contains(out, "secret-token") {
-		t.Fatalf("configure: %q %v", out, err)
-	}
-	out, _, err = run(t, []string{"config", "show"}, "", nil)
+	t.Setenv("DM_DOT_API_URL", server.URL)
+	t.Setenv("DM_DOT_REST_API_KEY", "secret-token")
+	out, _, err := run(t, []string{"config", "show"}, "", nil)
 	if err != nil || !strings.Contains(out, server.URL) || !strings.Contains(out, "configured") || strings.Contains(out, "secret-token") {
 		t.Fatalf("config show: %q %v", out, err)
 	}
@@ -75,9 +71,28 @@ func TestConfigureSendAndClear(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Setenv("DM_DOT_API_URL", "")
+	t.Setenv("DM_DOT_REST_API_KEY", "")
 	_, _, err = run(t, []string{"send", "hello"}, "", server.Client())
 	if err == nil {
 		t.Fatal("expected missing URL after clearing config")
+	}
+}
+
+func TestCLIOverrideNeverLeaksEnvironmentCredential(t *testing.T) {
+	prepareConfig(t)
+	requests := 0
+	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		w.WriteHeader(202)
+		_, _ = io.WriteString(w, `{"status":"accepted","event_id":"evt_test"}`)
+	}))
+	defer server.Close()
+	t.Setenv("DM_DOT_API_URL", "https://safe.example")
+	t.Setenv("DM_DOT_REST_API_KEY", "secret-token")
+	_, _, err := run(t, []string{"send", "--url", server.URL, "sensitive data"}, "", server.Client())
+	if err == nil || !strings.Contains(err.Error(), "API origin differs") || requests != 0 {
+		t.Fatalf("potential token leak: err=%v, requests=%d", err, requests)
 	}
 }
 
