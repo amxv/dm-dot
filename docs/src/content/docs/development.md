@@ -17,7 +17,7 @@ pkg/message/               Shared message request/response and validation contra
 pkg/client/                Authenticated REST sender for local callers
 cmd/dm-dot/                CLI entry point
 internal/cli/              CLI commands and stdin/file handling
-internal/config/           Optional per-user CLI configuration
+internal/config/           OS credential store, origin pinning, and v0.1 migration
 internal/upgrade/          Latest-release checks and explicit upgrades
 docs/public/install.*      Website-hosted native CLI installers
 .github/workflows/release.yml    Six-platform-architecture binary release matrix
@@ -63,6 +63,8 @@ The official Go MCP SDK implements tools, transport and version negotiation. The
 Keep regression coverage for `initialize` **and** MCP 2.0 `server/discover`. A correct `events/list` alone is insufficient for ChatGPT's subscription discovery.
 
 The common `SendMessage` function is used by both the MCP tool and REST ingress. The CLI uses the REST endpoint with a shared `pkg/message` contract. A change to message validation, subscription storage, signing or retries must be tested through **all three** surfaces.
+
+CLI `config.Effective` ensures URL overrides match the credential's configured HTTPS origin before retrieving the native key. Tests inject a fake OS keyring to exercise macOS/Windows/Linux-independent migration and verify that plaintext credentials remain in their original config after a failed migration. New CLI configs store only the API URL. The native key is stored with the account name equal to the normalized origin under the `dm-dot-cli` service.
 
 ## CLI publishing
 

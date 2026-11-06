@@ -136,3 +136,25 @@ func EndpointURL(raw string) (string, error) {
 	}
 	return u.String(), nil
 }
+
+// Origin returns the canonical HTTPS origin that a REST credential is bound to.
+// Default port 443 and hostname case differences are normalized; another host
+// or nonstandard port is always a different credential destination.
+func Origin(raw string) (string, error) {
+	endpoint, err := EndpointURL(raw)
+	if err != nil {
+		return "", err
+	}
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return "", ErrInvalidURL
+	}
+	host := strings.ToLower(u.Hostname())
+	if strings.Contains(host, ":") {
+		host = "[" + host + "]"
+	}
+	if port := u.Port(); port != "" && port != "443" {
+		host += ":" + port
+	}
+	return "https://" + host, nil
+}

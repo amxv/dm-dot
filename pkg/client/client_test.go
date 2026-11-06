@@ -97,3 +97,20 @@ func TestSendAPIErrorAndMalformedAcceptance(t *testing.T) {
 		t.Fatalf("got %v", err)
 	}
 }
+
+func TestCanonicalCredentialOrigin(t *testing.T) {
+	for _, tc := range []struct {
+		input, want string
+	}{
+		{"https://EXAMPLE.com", "https://example.com"},
+		{"https://example.com:443/v1/messages", "https://example.com"},
+		{"https://example.com:8443", "https://example.com:8443"},
+		{"https://[2001:db8::1]:443", "https://[2001:db8::1]"},
+		{"https://another.example", "https://another.example"},
+	} {
+		got, err := Origin(tc.input)
+		if err != nil || got != tc.want {
+			t.Errorf("Origin(%q) = %q, %v; want %q", tc.input, got, err, tc.want)
+		}
+	}
+}

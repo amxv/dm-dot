@@ -69,6 +69,8 @@ dm-dot upgrade --check
 
 You can alternatively set `DM_DOT_API_URL` and `DM_DOT_REST_API_KEY` in an agent's environment instead of saving configuration. See the [CLI reference](https://dm-dot.ashray.xyz/docs/cli) for file input, setup, upgrades, and security.
 
+Starting with v0.2, the CLI stores tokens in native OS credential storage (macOS Keychain, Windows Credential Manager, or Linux Secret Service), never in a new plaintext config. Existing v0.1 configs migrate on first use after upgrade. Credentials are bound to the configured API origin: URL overrides cannot redirect your token. Linux hosts without Secret Service can use both environment variables instead.
+
 ## What to expect
 
 **This is one-way messaging.** dm-dot does not provide a reply channel, message history, or a durable queue. A successful send means ChatGPT accepted the webhook, **not** that your dot has finished (or even started) processing it. Your dot must explicitly subscribe, and your ChatGPT account must support MCP Events subscriptions.

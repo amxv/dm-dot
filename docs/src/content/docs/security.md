@@ -34,7 +34,11 @@ Recommended precautions: use a high-entropy key, store it in a secure credential
 
 The REST API uses a **separate `DM_DOT_REST_API_KEY` bearer token**. It does not accept the MCP query parameter as authentication, and it does not advertise permissive browser CORS. Both token types can initiate dot work, so neither belongs in client-side JavaScript or public environment variables. See [REST API](/docs/rest-api).
 
-The native CLI uses this same REST token. `dm-dot configure --token-stdin` saves it to the current user's config file (`dm-dot/config.json` under the OS user configuration directory). On Unix, the CLI creates a private directory and a mode `0600` file and rejects overly permissive existing files; on Windows, it relies on user-profile directory ACLs. **The token is stored as plaintext**, not in a hardware-backed keychain. If local disk storage is unsuitable, use `DM_DOT_API_URL` and `DM_DOT_REST_API_KEY` environment variables provided by your own secret manager instead. Never pass your token as a command-line argument, and grant CLI access only to trusted local agents.
+The native CLI uses this same REST token. In v0.2+, `dm-dot configure --token-stdin` stores the token in **macOS Keychain**, **Windows Credential Manager**, or **Linux Secret Service**. Its JSON config file (`dm-dot/config.json` under the OS user configuration directory) holds only the deployment URL, with mode `0600` on Unix. Existing v0.1 plaintext credentials are migrated into the native store and verified before the file is replaced; migration fails closed without deleting the original if the native store is unavailable. Linux headless environments without Secret Service must use paired `DM_DOT_API_URL` and `DM_DOT_REST_API_KEY` environment variables; there is no plaintext fallback.
+
+**Origin binding:** A configured REST credential is bound to its normalized HTTPS origin. A different `--url` or `DM_DOT_API_URL` (even when an environment key is also set) is rejected before reading the native key or sending HTTP. An environment-only client needs both explicit URL and token variables. Changing the configured destination requires `dm-dot configure` with the new key, or clearing the configuration first.
+
+OS-native secret storage is not a sandbox: agents running under the same user and able to execute `dm-dot` can still send messages. Never pass tokens as CLI arguments, and grant CLI access only to trusted local agents.
 
 ## Callback security
 
